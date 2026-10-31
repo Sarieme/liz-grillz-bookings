@@ -1,0 +1,17 @@
+PS C:\Users\My Guest>    cd "c:\Users\My Guest\Desktop\Liz's Grillz Bookings"; git push -u origin main
+info: please complete authentication in your browser...
+Enumerating objects: 6, done.
+Counting objects: 100% (6/6), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (6/6), 1.69 KiB | 432.00 KiB/s, done.
+Total 6 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+To https://github.com/Sarieme/liz-grillz-bookings.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+
+branch 'main' set up to track 'origin/main'.
+Everything up-to-date
+PS C:\Users\My Guest\Desktop\Liz's Grillz Bookings> git log --oneline
+ba4f7f9 (HEAD -> main, origin/main) Add business brief for Liz's Grillz Bookings
+PS C:\Users\My Guest\Desktop\Liz's Grillz Bookings>
