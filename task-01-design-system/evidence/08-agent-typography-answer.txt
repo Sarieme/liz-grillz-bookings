@@ -1,0 +1,46 @@
+Typography style used for the main heading:
+- Typography Style: display small
+
+Variables used:
+- Font Size: var(--font-size-display-small) (40px)
+- Line Height: var(--line-height-display-small) (60px)
+- Font Weight: var(--font-weight-display-small) (600)
+- Letter Spacing: var(--letter-spacing-display-small) (-2px)
+- Font Family: var(--font-family-primary) ('DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif)
+- Composite Shorthand Variable: var(--font-display-small)
+
+What was read to conclude the heading uses display small:
+1. In index.html (lines 36-44), the CSS rule for `.business-heading` directly applies the display-small typography variables:
+   .business-heading {
+     color: var(--color-primary);
+     font-family: var(--font-family-primary);
+     font-size: var(--font-size-display-small);
+     line-height: var(--line-height-display-small);
+     font-weight: var(--font-weight-display-small);
+     letter-spacing: var(--letter-spacing-display-small);
+     margin-bottom: 0.25em;
+   }
+
+2. In tokens.css (lines 263-268), these variables are defined under the "display small" scale section:
+   /* Typography Scale: display small */
+   --font-size-display-small: 40px;
+   --line-height-display-small: 60px;
+   --font-weight-display-small: 600;
+   --letter-spacing-display-small: -2px;
+   --font-display-small: 600 40px / 60px var(--font-family-primary);
+
+3. In design-tokens.tokens (1).json (lines 2483-2528), the source token node is explicitly named "display small" with:
+   - fontSize: 40
+   - lineHeight: 60
+   - fontWeight: 600
+   - letterSpacing: -2
+   - fontFamily: "DM Sans"
+
+Quoted variable names from the CSS rule:
+- "--font-size-display-small"
+- "--line-height-display-small"
+- "--font-weight-display-small"
+- "--letter-spacing-display-small"
+- "--font-display-small"
+Note- I checked in the code and the style used is correct.
+

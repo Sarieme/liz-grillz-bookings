@@ -37,11 +37,26 @@
 > > [my exact text, as a block quote]
 > 
 > **Agent result:** [one factual sentence]
-> **My notes:**
+> **My notes:** This was done. 
 > 
 > 7. Do not run git add, git commit or git push. I will review the file first.
 > 8. When you finish, tell me how many prompts you included, and list any prompt you believe I sent but that you could not see.
 
 **Agent result:** Created `task-01-design-system/docs/prompts.md` recording all visible prompts and displayed the folder tree without running any git commands.
-**My notes:**
+**My notes:** This was done.
+
+---
+
+## Prompt 4: Main heading typography style and variable query
+> Which typography style did you use for the main heading, and which variable did you use?” Save your answer as evidence/08-agent-typography-answer.txt
+
+**My notes:** Checked the typography style and it matches the display small style in the style rule. 
+
+---
+
+## Prompt 5: Heading typography verification and CSS variable quote query
+> What did you read to conclude the heading uses display small? Quote the variable name from the CSS rule.” Save the answer too in the @[c:\Users\HomePC\Desktop\Liz's Grillz Bookings\evidence\08-agent-typography-answer.txt] 
+
+**My notes:** Checked and Confirmed
+
 

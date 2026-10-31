@@ -20,3 +20,5 @@ Thumbs.db
 *.sqlite-journal
 *.db-journal
 
+desktop.ini
+Desktop.ini

@@ -1,0 +1,42 @@
+Raw Value Search & UI Verification Evidence
+================================================================================
+Task: 07 - Raw Value Search
+Project: Liz's Grillz Bookings
+Screenshot Evidence: 07-raw-value-search.jpg
+
+1. OBJECTIVE:
+Verify that raw/primitive color values (e.g., hex codes like #de6632, #c2410c, #f67c49)
+are NOT used directly in the user interface (index.html), and that all styling
+exclusively consumes semantic Color Roles via CSS variables (var(--color-*)).
+
+2. SEARCH RESULTS IN UI IMPLEMENTATION (index.html):
+Query Pattern: #[0-9a-fA-F]{3,8}
+Files Searched: index.html
+Matches:
+- Line 139: &#8358;400,000 (HTML entity for Nigerian Naira currency symbol ₦)
+- Total raw hex color values found: 0
+
+CONCLUSION:
+Zero raw color values or primitive palette colors are hardcoded in index.html.
+All UI components strictly reference semantic color roles:
+- Heading: var(--color-primary)
+- Tagline: var(--color-secondary)
+- Body text: var(--color-on-surface-variant)
+- Canvas: var(--color-background), var(--color-on-background)
+- Primary button: var(--color-primary), var(--color-on-primary)
+- Button hover: var(--color-primary-container), var(--color-on-primary-container)
+- Card surface: var(--color-surface)
+- Card border: var(--color-outline-variant)
+- Card title: var(--color-on-surface)
+
+3. SOURCE OF TRUTH PRIMITIVES (design-tokens.tokens (1).json):
+As displayed in the attached screenshot (07-raw-value-search.jpg), raw hex values
+reside strictly in the "primitives" -> "color palletes" block:
+- primary50: #c7511fff (line 230)
+- primary60: #de6632ff (line 245)
+- primary70: #f67c49ff (line 260)
+
+These are converted to internal reference CSS variables (--color-primitive-primary-*)
+in tokens.css and mapped semantically to Color Roles, keeping the design system
+as the sole source of truth while protecting UI components from direct primitive dependencies.
+
