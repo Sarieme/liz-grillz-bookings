@@ -1,0 +1,5 @@
+## 1. Home page promises features that do not exist
+- **File:** index.html>html>body>main>home>container>p.description, line 132, commit 9be1523
+- **What:** The paragraph under the heading says visitors can "check available dates against live kitchen capacity" and "lock in your booking with an instant deposit online". At this stage the page is static HTML. There is no server, no database, no capacity data and no payment gateway, so none of this works. The "Check a date" button does [nothing / describe what it does].
+- **Cost in production:** A client at a church or office could believe a date is held or a deposit is accepted when neither happened. That can mean a double-booked date, a dispute over money, or a client who arrives at an event with no food arranged. It also damages the trust my brief is built on, and the same false claim in a readme would be an automatic fail in this assessment.
+- **Fix (later):** "Browse our catering rates and sample pricing", and keep the capacity and deposit wording out until the features are built and tested.
