@@ -1,0 +1,114 @@
+/**
+ * ============================================================================
+ * Liz's Grillz Bookings - Scaffold Base Stylesheet
+ * Directory: task-02-repository-and-scaffold/style.css
+ * ============================================================================
+ * STYLING ARCHITECTURE & STRICT TOKEN COMPLIANCE:
+ * 1. Read-only design system: Inherits directly from ../tokens.css.
+ * 2. Color Roles: Strictly uses semantic variables (--color-*), zero hex codes.
+ * 3. Typography: Strictly consumes scale tokens (--font-size-*, --line-height-*, etc.).
+ * 4. Elevation: Strictly consumes drop-shadow tokens (--shadow-soft).
+ * 5. Viewport: Full viewport height (100vh) with 100dvh dynamic fallback.
+ * ============================================================================
+ */
+
+/* Minimal CSS Normalization (No external framework) */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Base Body Layout */
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  font-family: var(--font-family-primary);
+  /* Full viewport height baseline (100vh) with modern dynamic viewport unit (100dvh) */
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Semantic Landmark: Home Layout Container */
+.home-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  /* Padding using relative typography scale unit */
+  padding: 1.5em;
+}
+
+/* Minimalist Home Card Wrapper */
+.home-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 36em;
+}
+
+/* Main Heading: Display Small Typography Scale */
+.business-heading {
+  color: var(--color-primary);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-display-small);
+  line-height: var(--line-height-display-small);
+  font-weight: var(--font-weight-display-small);
+  letter-spacing: var(--letter-spacing-display-small);
+  margin-bottom: 0.25em;
+}
+
+/* Approved Tagline / Short Line: Body Large Typography Scale */
+.tagline {
+  color: var(--color-on-surface-variant);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-body-large);
+  line-height: var(--line-height-body-large);
+  font-weight: var(--font-weight-body-large);
+  letter-spacing: var(--letter-spacing-body-large);
+  margin-bottom: 1.5em;
+}
+
+/* Action Button Wrapper */
+.action-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Primary Interactive Button: Semantic Color Roles + Label Large Typography */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-label-large);
+  line-height: var(--line-height-label-large);
+  font-weight: var(--font-weight-label-large);
+  letter-spacing: var(--letter-spacing-label-large);
+  box-shadow: var(--shadow-soft);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  box-shadow: var(--shadow-medium);
+}
+
