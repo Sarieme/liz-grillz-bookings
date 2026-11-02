@@ -1,0 +1,49 @@
+Nested Folder Recovery Evidence (Both Fixes)
+================================================================================
+Timestamp: 11/02/2026 06:20:42
+
+Fix 1: Changing Directory into the Project Folder
+--------------------------------------------------------------------------------
+By navigating into the directory containing package.json, npm correctly resolves the dev lifecycle script:
+
+PS C:\Users\HomePC\Desktop\Liz's Grillz Bookings> cd task-02-repository-and-scaffold
+PS C:\Users\HomePC\Desktop\Liz's Grillz Bookings\task-02-repository-and-scaffold> npm run dev
+
+> lizs-grillz-bookings-scaffold@0.1.0 dev
+> next dev --turbopack
+
+▲ Next.js 16.3.8 (Turbopack)
+- Local:        http://localhost:3000
+- Environments: .env
+✓ Ready in 1120ms
+
+
+Fix 2: Rescaffolding In Place and Running from Root
+--------------------------------------------------------------------------------
+Instruction given to agent:
+"Scaffold the foundation IN PLACE inside task-02-repository-and-scaffold/. Do not create an extra nested project directory. All files must sit directly at the top level of task-02-repository-and-scaffold."
+
+All files placed directly inside task-02-repository-and-scaffold/:
+- package.json
+- tsconfig.json
+- next.config.ts
+- app/layout.tsx
+- app/page.tsx
+
+Root package.json configured with workspace forwarder:
+"dev": "npm run dev --prefix task-02-repository-and-scaffold"
+
+Verification from repository root:
+PS C:\Users\HomePC\Desktop\Liz's Grillz Bookings> npm run dev
+
+> lizs-grillz-bookings@1.0.0 dev
+> npm run dev --prefix task-02-repository-and-scaffold
+
+> lizs-grillz-bookings-scaffold@0.1.0 dev
+> next dev --turbopack
+
+▲ Next.js 16.3.8 (Turbopack)
+- Local:        http://localhost:3000
+- Environments: .env
+✓ Ready in 950ms
+

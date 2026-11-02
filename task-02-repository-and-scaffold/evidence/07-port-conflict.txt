@@ -1,0 +1,30 @@
+Port Conflict Error Evidence
+================================================================================
+Timestamp: 11/02/2026 06:47:08
+Target Port: 3000
+Environment: Windows 11 / Node.js v24.22.1
+
+1. Conflict Trigger:
+A primary Node process was initialized and bound to port 3000. A second process attempted to bind to the same port.
+
+Command executed:
+PS C:\Users\HomePC\Desktop\Liz's Grillz Bookings> node -e "const http = require('http'); const server = http.createServer(); server.on('error', (e) => console.error(e.message)); server.listen(3000);"
+
+Console Output:
+listen EADDRINUSE: address already in use :::3000
+
+2. Diagnostic Inspection:
+Command used to identify the process holding port 3000:
+PS C:\Users\HomePC\Desktop\Liz's Grillz Bookings> netstat -ano | findstr :3000
+
+Active Listener Output:
+  TCP    0.0.0.0:3000           0.0.0.0:0              LISTENING       28228
+  TCP    [::]:3000              [::]:0                 LISTENING       28228
+
+Process Identification:
+Command: tasklist /FI "PID eq 28228"
+Image Name: node.exe
+PID: 28228
+Session: Console (27)
+Memory: 35,592 K
+

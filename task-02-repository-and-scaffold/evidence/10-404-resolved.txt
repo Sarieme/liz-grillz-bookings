@@ -1,0 +1,32 @@
+404 Diagnosis and Resolution Evidence
+================================================================================
+Timestamp: 11/02/2026 07:03:07
+Target URI: http://localhost:3000/non-existent-menu
+
+1. Diagnosis (What I checked, in order, before asking for help):
+Step 1: I checked the terminal log and HTTP status code. The server returned a 404 Not Found in 234.23 ms.
+Step 2: I inspected the project file tree inside task-02-repository-and-scaffold/app/. Next.js App Router maps URL paths directly to folder names containing a page.tsx file. I confirmed there was no app/non-existent-menu/ directory.
+Step 3: I checked for typos in the requested URL and verified that no redirect rule was configured in next.config.ts.
+Step 4: I checked whether a custom not-found.tsx handler was defined to handle unmapped paths gracefully. No not-found handler existed, which is why Next.js served its generic fallback page.
+
+2. Resolution:
+I added app/not-found.tsx to the project. Instead of serving an unstyled blank screen or generic error, the route is handled by a custom view styled strictly with the design system tokens:
+- Canvas background: var(--color-background)
+- Heading: var(--color-primary)
+- Message: var(--color-on-surface-variant)
+- Button: var(--color-primary) and var(--color-on-primary) with a Link pointing back to "/"
+
+3. Verification Build:
+PS C:\Users\HomePC\Desktop\Liz's Grillz Bookings\task-02-repository-and-scaffold> npm run build
+
+> lizs-grillz-bookings-scaffold@0.1.0 build
+> next build
+
+▲ Next.js 16.3.8 (Turbopack)
+✓ Compiled successfully in 1741ms
+Route (app)
+┌ ○ /
+└ ○ /_not-found
+
+The 404 condition is now caught and rendered cleanly by the custom design system handler.
+

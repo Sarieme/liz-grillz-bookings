@@ -1,0 +1,29 @@
+404 Error Evidence
+================================================================================
+Timestamp: 11/02/2026 07:02:26
+Target URI: http://localhost:3000/non-existent-menu
+Method: GET
+
+1. Command Executed:
+$time = Measure-Command { 
+  try { 
+    $res = Invoke-WebRequest -Uri "http://localhost:3000/non-existent-menu" -UseBasicParsing 
+    $status = $res.StatusCode 
+  } catch { 
+    $status = $_.Exception.Response.StatusCode.value__ 
+  } 
+}
+Write-Output "Status: $status"
+Write-Output "Time: $($time.TotalMilliseconds) ms"
+
+2. Measurement Output:
+Status: 404
+Time: 234.2284 ms
+
+3. Terminal Server Log:
+▲ Next.js 16.3.8 (Turbopack)
+GET /non-existent-menu 404 in 234ms
+
+4. Screen State:
+Default unstyled 404 page ("This page could not be found.") rendered because no route or custom not-found handler matched the requested path.
+
