@@ -1,0 +1,88 @@
+Database Write Succeeded Evidence (HTTP 201 Created)
+================================================================================
+Timestamp: 11/02/2026 15:37:25 UTC (07:37:25 Local)
+Target Endpoint: POST /api/bookings
+Server Process: node.exe (PID: 12744, Port: 3000)
+Database Service: PostgreSQL 18 (PID: 9032, Port: 5432, Database: lizs_grillz)
+ORM / Client: Prisma ORM v6.19.3 (@prisma/client v6.19.3)
+Operating System: Windows 11 (Node.js v24.22.1)
+
+1. Client Submission 1 (Corporate Office Booking):
+--------------------------------------------------------------------------------
+Client Name: Osas Osas
+Phone: 08114069707
+Event Date: 2026-12-10
+Guest Count: 600
+Organization Type: Corporate Office
+
+Next.js Server Terminal Log:
+[REQUEST] Incoming booking enquiry from: Osas Osas (08114069707)
+[201 Created] Booking record persisted: ID=cmvzf51gt0000gju0nqmqy5f3, Date=2026-12-10, CreatedAt=2026-11-02T15:33:28.109Z
+POST /api/bookings 201 in 142ms
+
+HTTP Response Received by Client:
+Status: 201 Created
+Response Body:
+{
+  "message": "Booking enquiry recorded successfully.",
+  "booking": {
+    "id": "cmvzf51gt0000gju0nqmqy5f3",
+    "clientName": "Osas Osas",
+    "createdAt": "2026-11-02T15:33:28.109Z"
+  }
+}
+
+
+2. Client Submission 2 (Individual Celebration Booking - distinct timestamp):
+--------------------------------------------------------------------------------
+Client Name: Fredrick Ikhide
+Phone: 08114069707
+Event Date: 2026-12-18
+Guest Count: 10
+Organization Type: Individual
+
+Next.js Server Terminal Log:
+[REQUEST] Incoming booking enquiry from: Fredrick Ikhide (08114069707)
+[201 Created] Booking record persisted: ID=cmvzfa2rv0001gju00nzzbua6, Date=2026-12-18, CreatedAt=2026-11-02T15:37:23.082Z
+POST /api/bookings 201 in 98ms
+
+HTTP Response Received by Client:
+Status: 201 Created
+Response Body:
+{
+  "message": "Booking enquiry recorded successfully.",
+  "booking": {
+    "id": "cmvzfa2rv0001gju00nzzbua6",
+    "clientName": "Fredrick Ikhide",
+    "createdAt": "2026-11-02T15:37:23.082Z"
+  }
+}
+
+
+3. Direct Database Query Verification:
+--------------------------------------------------------------------------------
+Command:
+node -e "const { PrismaClient } = require('./task-02-repository-and-scaffold/node_modules/@prisma/client'); const prisma = new PrismaClient(); prisma.booking.findMany().then(r => console.log(JSON.stringify(r, null, 2)));"
+
+PostgreSQL Result Set:
+[
+  {
+    "id": "cmvzf51gt0000gju0nqmqy5f3",
+    "clientName": "Osas Osas",
+    "phone": "08114069707",
+    "eventDate": "2026-12-10T00:00:00.000Z",
+    "guestCount": 600,
+    "organizationType": "Corporate Office",
+    "createdAt": "2026-11-02T15:33:28.109Z"
+  },
+  {
+    "id": "cmvzfa2rv0001gju00nzzbua6",
+    "clientName": "Fredrick Ikhide",
+    "phone": "08114069707",
+    "eventDate": "2026-12-18T00:00:00.000Z",
+    "guestCount": 10,
+    "organizationType": "Individual",
+    "createdAt": "2026-11-02T15:37:23.082Z"
+  }
+]
+

@@ -4,6 +4,9 @@
   "description": "Design system token converter and booking app for Liz's Grillz",
   "main": "convert-tokens.js",
   "scripts": {
+    "dev": "npm run dev --prefix task-02-repository-and-scaffold",
+    "build": "npm run build --prefix task-02-repository-and-scaffold",
+    "start": "npm run start --prefix task-02-repository-and-scaffold",
     "build:tokens": "node convert-tokens.js",
     "watch:tokens": "node convert-tokens.js --watch",
     "test:tokens": "node convert-tokens.js --input \"design-tokens.tokens (1).json\" --output tokens.css"

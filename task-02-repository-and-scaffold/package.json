@@ -4,7 +4,10 @@
   "private": true,
   "description": "Task 02: Foundation and home screen scaffold for Liz's Grillz Bookings",
   "scripts": {
-    "start": "node -e \"const http = require('http'), fs = require('fs'), path = require('path'); const server = http.createServer((req, res) => { let filePath = path.join(__dirname, req.url === '/' ? 'index.html' : req.url); if (req.url.startsWith('/tokens.css')) filePath = path.join(__dirname, '..', 'tokens.css'); fs.readFile(filePath, (err, data) => { if (err) { res.writeHead(404); res.end('Not Found'); return; } const ext = path.extname(filePath); const mime = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript' }[ext] || 'text/plain'; res.writeHead(200, { 'Content-Type': mime }); res.end(data); }); }); server.listen(3000, () => console.log('Liz\\'s Grillz Bookings running at http://localhost:3000'));\""
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "keywords": [
     "design-tokens",
@@ -13,6 +16,18 @@
     "catering-app"
   ],
   "author": "Liz's Grillz",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "next": "^16.3.8",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "typescript": "^7.0.2"
+  },
+  "devDependencies": {
+    "prisma": "^6.19.3"
+  }
 }
-

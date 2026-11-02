@@ -1,0 +1,53 @@
+Database Write Failed Evidence (Rejection of False Success)
+================================================================================
+Timestamp: 11/02/2026 15:52:10 UTC (07:52:10 Local)
+Target Endpoint: POST /api/bookings
+Operating System: Windows 11 / Node.js v24.22.1
+Framework: Next.js v16.3.8 (Turbopack)
+ORM / Database: Prisma ORM v6.19.3 / PostgreSQL 18
+
+1. Failure Condition Injection:
+--------------------------------------------------------------------------------
+To test against the false-success defect (where a frontend optimistically claims
+a record was saved even when the database is unavailable), the database connection
+string in task-02-repository-and-scaffold/.env was deliberately configured to point
+to an unreachable port:
+DATABASE_URL="postgresql://postgres:Osariemen01%40@localhost:5433/lizs_grillz?schema=public"
+
+2. Client Submission Attempt:
+--------------------------------------------------------------------------------
+A booking submission was triggered via the web UI form at http://localhost:3000.
+
+Form Input:
+Full Name: Osas Osas
+Phone: 08114069707
+Event Date: 2026-12-10
+Guest Count: 600
+Client Type: Corporate Office
+
+3. Server Terminal Output (Captured Console Logs):
+--------------------------------------------------------------------------------
+[REQUEST] Incoming booking enquiry from: Osas Osas (08114069707)
+[DATABASE ERROR] Failed to record booking: 
+Invalid `prisma.booking.create()` invocation:
+
+Can't reach database server at `localhost:5433`
+
+Please make sure your database server is running at `localhost:5433`.
+POST /api/bookings 500 in 2054ms
+
+4. HTTP Response Delivered to Browser:
+--------------------------------------------------------------------------------
+HTTP Status Code: 500 Internal Server Error
+Headers: Content-Type: application/json
+Body:
+{
+  "error": "Database connection failed or transaction aborted."
+}
+
+5. UI Feedback & Defect Prevention:
+--------------------------------------------------------------------------------
+UI Banner Status: Error (HTTP 500): Database connection failed or transaction aborted.
+Outcome: The application strictly refused to render a false confirmation or generate
+a dummy booking reference when the write operation was rejected by the database layer.
+

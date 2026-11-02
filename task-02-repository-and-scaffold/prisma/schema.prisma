@@ -1,0 +1,19 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Booking {
+  id               String   @id @default(cuid())
+  clientName       String
+  phone            String
+  eventDate        DateTime
+  guestCount       Int
+  organizationType String   // Individual, Church, Corporate Office
+  createdAt        DateTime @default(now())
+}
+
