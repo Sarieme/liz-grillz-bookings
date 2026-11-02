@@ -1,0 +1,104 @@
+Liz's Grillz Bookings: Master Implementation Plan
+
+This implementation plan is divided into two distinct parts:
+
+Part 1: Context Structure Fixes & Defect Remediation (Resolving existing documentation, UI feature claims, and token gaps without violating the business brief or design system).
+Part 2: Application Scaffolding & End-to-End Build Plan (Architecture, data model, business logic engines, and verification phases for the full application).
+Part 1: Context Structure Fixes & Defect Remediation
+1. The Home Page Feature Claim Defect (Defect #1)
+Problem in Context: In root index.html (line 132) and task-01-design-system/index.html, the text claims visitors can "check real kitchen capacity for your event date" and "pay your deposit online with instant confirmation". As documented in task-01-design-system/docs/defects.md, these features do not yet exist, risking client confusion and assessment failure.
+Remediation Strategy:
+Update index.html to align with the approved wording:
+Heading: Liz's Grillz Bookings
+Tagline / Short Line: Browse our catering rates and sample pricing.
+Button: Browse catering rates
+Remove or decouple the static price card from implying an active booking engine until the backend pricing engine is wired.
+Update task-01-design-system/docs/defects.md to record the fix and date of resolution.
+2. Design System Token Gaps (Spacing & Border Radius)
+Problem in Context: The source tokens (design-tokens.tokens (1).json) and generated stylesheet (tokens.css) define colors, typography, and shadows, but define zero tokens for layout spacing (margins, paddings, gaps) and zero tokens for border-radius. Consequently, UI code has had to rely on ad-hoc units (em, px).
+Remediation Strategy:
+Strict Token Governance Rule: Never edit tokens.css or the tokens JSON unilaterally without explicit approval.
+Harmonized Spacing Scale: Propose a 4px/8px modular spacing system mapped to the design system's line-height scale:
+--spacing-xs: 4px;
+--spacing-sm: 8px;
+--spacing-md: 16px;
+--spacing-lg: 24px;
+--spacing-xl: 32px;
+--spacing-2xl: 48px;
+Border Radius Tokens: Formalize the existing values:
+--radius-sm: 4px;
+--radius-md: 8px; (current button radius)
+--radius-lg: 12px; (current card radius)
+--radius-full: 9999px;
+3. Mobile Viewport Height Normalization
+Problem in Context: 100vh on mobile browsers (Safari iOS, Chrome Android) overflows when browser toolbars appear, causing buttons to be cut off or hidden until scrolled.
+Remediation Strategy:
+Standardize all top-level layouts to use:
+css
+min-height: 100vh;
+min-height: 100dvh;
+This preserves backwards compatibility with legacy browsers (100vh) while providing dynamic responsive resizing (100dvh) on modern mobile devices.
+Part 2: Scaffolding & End-to-End Build Plan
+Phase 1: Repository Foundation & Scaffold (task-02-repository-and-scaffold/)
+Objective: Establish the clean, minimal, token-compliant baseline screen.
+Deliverables:
+index.html: Semantic structure (<main>, <h1>, <p>, <button>).
+style.css: References ../tokens.css, sets 100vh/100dvh container, flexbox centering.
+package.json: Zero external dependencies, pure Node.js static runner.
+.env.example: Non-sensitive configuration template.
+README.md: Architectural documentation and rule audit.
+Verification:
+Automated regex search confirming 0 raw hex values and 0 primitive color tokens.
+W3C HTML validator pass and lighthouse accessibility score of 100%.
+Phase 2: Domain Data Modeling & Persistence
+Objective: Design the persistence layer reflecting all business rules and Nigerian Data Protection Act (NDPA) privacy constraints.
+Entities:
+Clients: id, name, phone, email, organization_type (individual, church, office), created_at.
+Bookings: id, client_id, event_date, guest_count, tier_name, base_price, logistics_fee, discount_amount, total_amount, deposit_required, balance_amount, status (pending_deposit, deposit_confirmed, balance_due, fully_paid, cancelled), expires_at (48 hours from creation).
+Payments: id, booking_id, payment_type (deposit, balance), amount, gateway_reference, gateway_status (pending, confirmed, failed), confirmed_at.
+Invoices: id, booking_id, invoice_number, pdf_url, issued_at.
+CapacityCalendar: event_date, large_events_count (max 1 or 2 depending on guest scale), total_guests_booked, is_blocked.
+Phase 3: Kitchen Capacity & Availability Engine
+Objective: Enforce the physical limits of Liz's kitchen.
+Rules to Implement:
+Two large events cannot share the same date.
+A date selected by a customer is temporarily reserved for 48 hours awaiting deposit payment.
+If no gateway confirmation is received within 48 hours, the date is released automatically by a background scheduled job.
+Date availability API endpoint: GET /api/availability?date=YYYY-MM-DD returns { available: boolean, reason?: string }.
+Phase 4: Pricing & Money Rules Engine
+Objective: Codify all financial parameters from the business brief without hardcoding values in UI views.
+Rules to Implement:
+Fixed Pricing Matrix: Base cost calculated per guest count tier.
+Separate Logistics: Dynamic logistics fee based on Lagos location/distance.
+Volume Discounts: Progressive discounts as total spend increases.
+Deposit Calculation:
+Individuals: 80% of total estimate.
+Churches & Corporate Offices: 60% of total estimate.
+Balance Due Date: Automatically calculated as event_date - 5 days.
+Headcount Adjustment: Permitted up to event_date - 7 days; recalculates total and adjusts balance due.
+Cancellation & Refunds: Deposit refundable only if cancelled > 14 days prior to event_date.
+Phase 5: Client Booking & Web Checkout Flow
+Objective: Deliver a mobile-first, high-speed booking flow that complements WhatsApp.
+Components:
+Date Picker & Live Capacity Checker: Real-time feedback preventing double booking.
+Quote Calculator: Immediate transparent price calculation.
+Payment Gateway Integration: Paystack / Flutterwave integration.
+Client initiates deposit.
+Webhook receives asynchronous verification.
+Critical Rule: Payment is marked as PAID only upon cryptographic webhook signature verification from the gateway.
+Automated Receipts: Generates downloadable and printable PDF receipts immediately upon payment confirmation.
+Phase 6: Liz's Administration Portal
+Objective: Give Liz direct operational control without touching source code.
+Features:
+Calendar view showing booked, pending, and available dates.
+Pricing and discount list editor.
+Manual override for committee approvals or exceptions.
+WhatsApp quick-link generator (sends pre-filled booking link directly to WhatsApp clients).
+Phase 7: Verification, Security & Accessibility Audit
+Automated Design Token Linter: CI check to ensure zero raw CSS hex values or unregistered styles enter the codebase.
+Accessibility Verification: WCAG 2.1 Level AA automated testing across all screens (ensuring --color-primary #C2410C 5.2:1 contrast ratio is maintained).
+NDPA Compliance Check: Data minimization, encryption at rest, and audit logging for client contact records.
+Next Steps & Decisions Needed
+Defect #1 Fix Approval: Confirm whether to update root index.html (line 132) now with the approved copy to resolve Defect #1.
+Spacing & Radius Token Formalization: Decide whether to add formal spacing and radius tokens to convert-tokens.js / tokens.css or continue utilizing typographic em units and existing utility defaults.
+Backend Stack Selection: Select the preferred lightweight runtime for the booking engine (e.g., Node.js/Express + SQLite vs. pure Node serverless endpoints).
