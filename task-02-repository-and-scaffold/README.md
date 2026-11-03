@@ -1,58 +1,48 @@
-# Task 02: Repository Foundation & Scaffold
+# Task 02: Repository Foundation, Scaffold, and Database Diagnostics
 
-Foundation setup for **Liz's Grillz Bookings**, an event catering web application built with strict adherence to the project design system.
-
----
-
-## 1. Directory Structure
-
-```text
-task-02-repository-and-scaffold/
-├── .env.example       # Template environment variables (no real secrets)
-├── README.md          # Documentation and audit of Task 02 foundation
-├── index.html         # Semantic HTML5 base layout and home screen
-├── package.json       # Project descriptor and zero-dependency preview script
-└── style.css          # Base styling consuming tokens strictly from ../tokens.css
-```
+This document is written for a technical interviewer who has four minutes to understand what was accomplished, what architecture was chosen, and what went wrong during Task 02.
 
 ---
 
-## 2. Architecture & Design System Integration
+## 1. What This Task Was
+The objective of Task 02 was to take Liz's Grillz Bookings from design tokens to an operational, persistent web application foundation using an AI agent under strict human control. 
 
-This scaffold references the single source of truth:
-- **Design Tokens Stylesheet**: `../tokens.css` (read-only reference; not edited, duplicated, or copied).
-- **Color Roles Only**: Every visual surface and interactive component uses semantic CSS variables (`var(--color-*)`), with zero raw hex codes or palette primitives.
-- **Typography Scale**: Strictly applies modular scale tokens from `DM Sans` (`var(--font-size-*)`, `var(--line-height-*)`, `var(--font-weight-*)`, and `var(--letter-spacing-*)`).
-- **Elevation**: Shadow effects reference `var(--shadow-soft)` and `var(--shadow-medium)` generated from the brand's primary color.
-
----
-
-## 3. Screen Specification & Approved Copy
-
-The scaffold implements a single, minimalistic home screen taking full viewport height:
-- **Main Heading (`<h1>`)**: `Liz's Grillz Bookings` (uses `display-small` scale, colored in `--color-primary`).
-- **Short Line (`<p>`)**: `Browse our catering rates and sample pricing.` (uses `body-large` scale, colored in `--color-on-surface-variant`).
-- **Single Action Button (`<button>`)**: `Browse catering rates` (uses `label-large` scale, colored in `--color-primary` / `--color-on-primary`, with hover state `--color-primary-container` / `--color-on-primary-container`).
-
-No other screens, forms, fake payment links, or unimplemented feature claims (e.g., live capacity checking or deposit processing) exist on this page.
+The task required proving three things:
+1. That the application foundation could be scaffolded without violating design system constraints (zero raw hex colors, zero unapproved fonts, zero UI libraries, and read-only token consumption).
+2. That the development server could be deliberately broken three distinct ways (nested directory error, TCP port conflict, and unhandled 404) and diagnosed systematically using machine-specific evidence rather than guessing.
+3. That data writes to a persistent database could be verified via authentic HTTP 201 status codes and database inspector records, while rejecting false success when persistence fails.
 
 ---
 
-## 4. Mobile Viewport Height Handling
-
-On mobile browsers (iOS Safari, Android Chrome), `100vh` can exceed the visible viewport when the address bar is visible.
-To handle this responsibly while honoring the `100vh` prompt specification:
-- Baseline: `min-height: 100vh;`
-- Modern dynamic enhancement: `min-height: 100dvh;`
-This ensures older browsers receive standard `100vh`, while modern mobile browsers adapt smoothly to the dynamic browser address bar without clipping content.
+## 2. What We Built
+- **Full-Stack Application Foundation**: Next.js 16.3.8 (App Router with Turbopack) configured to resolve the design system tokens (`../../tokens.css`) from the repository root as a single source of truth.
+- **Relational Data Persistence**: PostgreSQL 18 local database integrated via Prisma ORM 6.19.3. Defined the `Booking` data model with schema migrations (`20261102152050_init_bookings`).
+- **Interactive Booking Form**: Client-side interactive form (`app/page.tsx`) capturing event inquiries (client name, phone number, event date, guest count, and organization type: Individual, Church, or Corporate Office) styled exclusively with design tokens.
+- **Transactional API Route**: `POST /api/bookings` route handler that validates input, writes atomic records to PostgreSQL, and returns `HTTP 201 Created` with the persistent record ID and timestamp.
+- **Custom 404 Route**: Token-styled `app/not-found.tsx` to handle missing routes without jarring default browser styling.
 
 ---
 
-## 5. Local Preview
+## 3. What We Decided
+1. **Next.js 16 with Turbopack over Static Server**: A dynamic framework was required to handle real backend database persistence and API route transactions. Turbopack provides sub-second compilation while respecting custom CSS token linking.
+2. **PostgreSQL over SQLite**: Given Nigerian Data Protection Act (NDPA) privacy rules and multi-client concurrent bookings (e.g. churches and corporate offices requesting competing dates), PostgreSQL provides genuine ACID transaction isolation and production-grade connection handling.
+3. **Prisma ORM over Raw SQL**: Prisma guarantees compile-time type safety across database operations and includes Prisma Studio for visual inspection of persisted records.
+4. **Strict HTTP 201 Contract**: The client UI is architected never to show a success message based on form submission alone. It requires a verified `HTTP 201 Created` status from the server containing the unique database CUID.
+5. **Dynamic Viewport Height (`100dvh`)**: To prevent mobile browser address bars from obscuring buttons, `min-height: 100dvh` was implemented with a `100vh` fallback.
 
-Run the zero-dependency local static server:
-```bash
-npm start
-```
-Navigate to `http://localhost:3000`.
+---
 
+## 4. What We Got Wrong (And How We Recovered)
+1. **Turbopack Boundary Restriction**: Turbopack initially refused to compile `import "../../tokens.css"` because the design system was located outside the task subfolder. Rather than duplicating or copying the CSS file (which would violate single source of truth rules), we declared `turbopack: { root: path.resolve(__dirname, "..") }` in `next.config.ts`.
+2. **Port 3000 Collision**: An orphaned background Node.js process held port 3000, causing `listen EADDRINUSE`. We diagnosed the conflict using `netstat -ano | findstr :3000`, identified the specific PID (28228), terminated it with `taskkill`, and restarted cleanly.
+3. **Design System Spacing Gaps**: The tokens JSON export contained no spacing (margin/padding) or border-radius tokens. Rather than unilaterally inventing tokens, we used relative typographic units (`em`, `rem`) harmonized with line-height ratios.
+4. **False-Success Vulnerability**: If the database was unreachable, a naively coded frontend could report success. We deliberately tested this by pointing `.env` to port `5433`, confirmed that Next.js and Prisma caught the failure, returned `HTTP 500`, and verified that the UI explicitly alerted the user.
+
+---
+
+## 5. Key Evidence Artifacts
+- **Scaffolding Plan & Files Created**: [`evidence/01-agent-plan.txt`](file:///c:/Users/HomePC/Desktop/Liz's%20Grillz%20Bookings/task-02-repository-and-scaffold/evidence/01-agent-plan.txt) and [`evidence/02-files-created.txt`](file:///c:/Users/HomePC/Desktop/Liz's%20Grillz%20Bookings/task-02-repository-and-scaffold/evidence/02-files-created.txt)
+- **Deliberate Breakages & Fixes**: [`evidence/05-nested-folder-error.txt`](file:///c:/Users/HomePC/Desktop/Liz's%20Grillz%20Bookings/task-02-repository-and-scaffold/evidence/05-nested-folder-error.txt) through [`evidence/10-404-resolved.txt`](file:///c:/Users/HomePC/Desktop/Liz's%20Grillz%20Bookings/task-02-repository-and-scaffold/evidence/10-404-resolved.txt)
+- **Verified Database Writes (201 Created)**: [`evidence/11-write-succeeded-logs.txt`](file:///c:/Users/HomePC/Desktop/Liz's%20Grillz%20Bookings/task-02-repository-and-scaffold/evidence/11-write-succeeded-logs.txt)
+- **Prisma Studio Table Rows**: [`evidence/12-database-rows.png`](file:///c:/Users/HomePC/Desktop/Liz's%20Grillz%20Bookings/task-02-repository-and-scaffold/evidence/12-database-rows.png)
+- **Rejection of False Success**: [`evidence/13-write-failed-logs.txt`](file:///c:/Users/HomePC/Desktop/Liz's%20Grillz%20Bookings/task-02-repository-and-scaffold/evidence/13-write-failed-logs.txt) and [`docs/false-success.md`](file:///c:/Users/HomePC/Desktop/Liz's%20Grillz%20Bookings/task-02-repository-and-scaffold/docs/false-success.md)
