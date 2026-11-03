@@ -10,12 +10,13 @@ Liz's Grillz Bookings is an event catering reservation platform for corporate of
   - **Task 01 (Design System Architecture):** Two-tier token system with Figma Variables exported to JSON, a vanilla Node compiler (`convert-tokens.js`), and generated CSS custom properties (`tokens.css`) containing WCAG AA compliant colors (`#C2410C` at 5.2:1 against white), 15 modular typography styles in DM Sans, and tinted elevation drop shadows.
   - **Task 02 (Scaffold & Foundation):** Full-stack Next.js 16.3.8 App Router scaffold using Turbopack with root design token resolution (`tokens.css`), semantic HTML, zero utility CSS frameworks, and zero unapproved fonts.
   - **Task 02 (Diagnostics & Database Persistence):** Local PostgreSQL database integration via Prisma ORM 6.19.3, schema migration (`init_bookings`), verified `HTTP 201 Created` database writes for corporate and individual clients, authentic PID port conflict resolution, and verified rejection of false success during simulated database failures.
+  - **Task 02 (Information Design & Branching Strategy):** Implemented dynamic head titles across routes, brand SVG favicon, Open Graph link previews, fluid typography with CSS `clamp()`, and `rem` button padding on `feature/information-design`. Integrated into `main` via Pull Request #1: https://github.com/Sarieme/liz-grillz-bookings/pull/1.
 - **Half Done:**
-  - **Information Design & Viewport Refinements:** Initial clamp font sizing and button rem padding are established on the home page, but dynamic head title tags, Open Graph meta previews, custom favicon, and multi-route verification are in progress on the `feature/information-design` branch.
+  - None (Task 01 and Task 02 are fully complete and verified).
 - **Not Started:**
   - **Live Payment Gateway Integration:** Paystack and Flutterwave webhooks for processing 80% individual and 60% corporate deposits (deferred to Task 04).
-  - **Kitchen Capacity Engine:** Automated ledger rule rejecting more than two large events per date.
-  - **Automated 48-Hour Date Hold & Invoice PDF Generation:** Automated background cron for expired reservations and PDF receipts for finance departments.
+  - **Kitchen Capacity Engine:** Automated ledger rule rejecting more than two large events per date (Task 03/04).
+  - **Automated 48-Hour Date Hold & Invoice PDF Generation:** Automated background cron for expired reservations and PDF receipts for finance departments (Task 04/05).
 
 ---
 
