@@ -1,7 +1,7 @@
 # README Usability Test Report
 
 ## 1. Test Setup & Tester Profile
-- **Tester:** Tobi (Junior Frontend Developer, friend of the author who has never worked on this repository).
+- **Tester:** Aaron Akor (Frontend Developer, my friend, he has never worked on this repository).
 - **Date:** November 3, 2026
 - **Test Machine:** Windows 11 Laptop, Node.js v24.20.0, PostgreSQL 17 installed locally.
 - **Task Given:** Follow Section 4 ("Getting Started") of the root `README.md` from a fresh clone to get the application running without asking for verbal assistance.
@@ -22,7 +22,7 @@
 
 ### Issue 2: Special Characters in PostgreSQL Database Password
 - **Verbatim Quote:**  
-  *"I created my .env file and pasted my password `P@ssword123`. When I ran the migration, it failed with `P1000: Authentication failed against database server at localhost:5432`. It took me ten minutes on Google to realize the @ sign broke the URL. Your readme didn't mention URL encoding."*
+  *"I created my .env file and pasted my password. When I ran the migration, it failed with `P1000: Authentication failed against database server at localhost:5432`. It took me ten minutes on Google to realize the @ sign in my password broke the URL. Your readme didn't mention URL encoding."*
 - **Root Cause:**  
   In standard URI connection strings (`postgresql://user:pass@host:port/db`), unencoded reserved characters such as `@`, `:`, `/`, or `#` in the password corrupt the hostname parsing logic.
 - **Fix Applied:**  
@@ -45,3 +45,4 @@ Following this test, Section 4 of the root `README.md` was updated with:
 1. Simpler, shell-agnostic commands using `cd task-02-repository-and-scaffold` for database commands.
 2. A clear tip on URL-encoding password special characters to prevent P1000 connection errors.
 3. Confirmation that Prisma creates the database automatically during migration.
+
