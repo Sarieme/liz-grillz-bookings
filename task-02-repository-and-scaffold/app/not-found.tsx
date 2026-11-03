@@ -2,69 +2,56 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <main
+    <div
       style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
+        maxWidth: "36rem",
+        margin: "0 auto",
+        padding: "4rem 1.25rem",
         textAlign: "center",
-        padding: "1.5em",
-        backgroundColor: "var(--color-background)",
-        color: "var(--color-on-background)",
-        fontFamily: "var(--font-family-primary)",
       }}
     >
-      <div style={{ maxWidth: "36em", width: "100%" }}>
-        <h1
+      <h1
+        style={{
+          color: "var(--color-primary)",
+          fontSize: "clamp(2rem, 4vw + 1rem, 2.75rem)",
+          lineHeight: "1.2",
+          fontWeight: "var(--font-weight-display-small)",
+          marginBottom: "0.5rem",
+        }}
+      >
+        Page Not Found
+      </h1>
+      <p
+        style={{
+          color: "var(--color-on-surface-variant)",
+          fontSize: "var(--font-size-body-large)",
+          lineHeight: "1.5",
+          marginBottom: "2rem",
+        }}
+      >
+        The catering page or route you requested does not exist.
+      </p>
+      <div>
+        <Link
+          href="/"
+          className="btn-primary"
           style={{
-            color: "var(--color-primary)",
-            fontSize: "var(--font-size-display-small)",
-            lineHeight: "var(--line-height-display-small)",
-            fontWeight: "var(--font-weight-display-small)",
-            letterSpacing: "var(--letter-spacing-display-small)",
-            marginBottom: "0.25em",
+            display: "inline-block",
+            backgroundColor: "var(--color-primary)",
+            color: "var(--color-on-primary)",
+            fontFamily: "var(--font-family-primary)",
+            fontSize: "var(--font-size-label-large)",
+            fontWeight: "var(--font-weight-label-large)",
+            padding: "0.75rem 1.75rem",
+            borderRadius: "8px",
+            textDecoration: "none",
+            boxShadow: "var(--shadow-soft)",
+            cursor: "pointer",
           }}
         >
-          Page Not Found
-        </h1>
-        <p
-          style={{
-            color: "var(--color-on-surface-variant)",
-            fontSize: "var(--font-size-body-large)",
-            lineHeight: "var(--line-height-body-large)",
-            fontWeight: "var(--font-weight-body-large)",
-            letterSpacing: "var(--letter-spacing-body-large)",
-            marginBottom: "1.5em",
-          }}
-        >
-          The catering page or route you requested does not exist.
-        </p>
-        <div>
-          <Link
-            href="/"
-            className="btn-primary"
-            style={{
-              display: "inline-block",
-              backgroundColor: "var(--color-primary)",
-              color: "var(--color-on-primary)",
-              fontFamily: "var(--font-family-primary)",
-              fontSize: "var(--font-size-label-large)",
-              fontWeight: "var(--font-weight-label-large)",
-              padding: "10px 20px",
-              borderRadius: "8px",
-              border: "1px solid transparent",
-              boxShadow: "var(--shadow-soft)",
-              textDecoration: "none",
-              cursor: "pointer",
-            }}
-          >
-            Return Home
-          </Link>
-        </div>
+          Return to Reservations
+        </Link>
       </div>
-    </main>
+    </div>
   );
 }
-

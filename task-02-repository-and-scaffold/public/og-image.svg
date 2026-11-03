@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#1C1917"/>
+  <!-- Decorative Background Glow -->
+  <circle cx="200" cy="150" r="300" fill="#C2410C" opacity="0.15"/>
+  <circle cx="1050" cy="480" r="250" fill="#C2410C" opacity="0.1"/>
+  
+  <!-- Brand Badge -->
+  <rect x="120" y="100" width="72" height="72" rx="16" fill="#C2410C"/>
+  <path d="M156 115 C151 123, 143 127, 143 135 C143 142, 148 147, 156 147 C164 147, 169 142, 169 135 C169 127, 161 123, 156 115 Z" fill="#FFFFFF"/>
+  
+  <!-- Text Content -->
+  <text x="210" y="148" font-family="'DM Sans', system-ui, sans-serif" font-size="36" font-weight="700" fill="#FFFFFF" letter-spacing="1">LIZ'S GRILLZ</text>
+  <text x="120" y="270" font-family="'DM Sans', system-ui, sans-serif" font-size="64" font-weight="700" fill="#FFFFFF" line-height="1.2">Premium Event Catering<tspan x="120" dy="75" fill="#FB923C">in Lagos, Nigeria</tspan></text>
+  <text x="120" y="420" font-family="'DM Sans', system-ui, sans-serif" font-size="28" font-weight="400" fill="#A8A29E">Lagos event catering reservations verified against kitchen capacity.</text>
+  
+  <!-- Feature Badges -->
+  <rect x="120" y="480" width="260" height="50" rx="8" fill="#292524" stroke="#44403C" stroke-width="1"/>
+  <text x="140" y="512" font-family="'DM Sans', system-ui, sans-serif" font-size="20" fill="#E7E5E4">✓ Live Capacity Verified</text>
+  
+  <rect x="410" y="480" width="260" height="50" rx="8" fill="#292524" stroke="#44403C" stroke-width="1"/>
+  <text x="430" y="512" font-family="'DM Sans', system-ui, sans-serif" font-size="20" fill="#E7E5E4">✓ Transparent Pricing</text>
+  
+  <rect x="700" y="480" width="280" height="50" rx="8" fill="#292524" stroke="#44403C" stroke-width="1"/>
+  <text x="720" y="512" font-family="'DM Sans', system-ui, sans-serif" font-size="20" fill="#E7E5E4">✓ 48-Hour Deposit Holds</text>
+</svg>
+

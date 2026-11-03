@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <rect width="32" height="32" rx="8" fill="#1C1917"/>
+  <!-- Grill Grates -->
+  <line x1="8" y1="18" x2="24" y2="18" stroke="#C2410C" stroke-width="2" stroke-linecap="round"/>
+  <line x1="10" y1="22" x2="22" y2="22" stroke="#C2410C" stroke-width="2" stroke-linecap="round"/>
+  <!-- Flame Silhouette -->
+  <path d="M16 5 C14 9, 10 11, 10 15 C10 18.5, 12.5 21, 16 21 C19.5 21, 22 18.5, 22 15 C22 11, 18 9, 16 5 Z" fill="#C2410C"/>
+  <path d="M16 11 C15 13, 13 14, 13 16 C13 17.5, 14.5 19, 16 19 C17.5 19, 19 17.5, 19 16 C19 14, 17 13, 16 11 Z" fill="#FB923C"/>
+</svg>
+
