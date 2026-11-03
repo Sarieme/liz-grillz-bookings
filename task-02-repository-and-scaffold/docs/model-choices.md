@@ -13,7 +13,7 @@ Antigravity takes longer on the first response. It reads the files, checks the p
 Speed-focused models generate code right away. That looks impressive, but they tend to guess rather than read. When I let a faster model write code without constraints, it defaulted to standard Tailwind classes, reached for raw hex codes, and ignored my design system. Getting code fast does not help if you spend the next hour fixing things that broke your constraints.
 
 ## One task where I chose wrong and switched
-When I first built the home screen, I wanted to see something working quickly, so I used a faster model. It gave me a complete page in seconds, but when I inspected the code, two things were wrong:
+When I first built the home screen, I wanted to see something working quickly, so I used Open Code. It gave me a complete page in seconds, but when I inspected the code, two things were wrong:
 
 1. It hardcoded raw hex colors directly into the CSS instead of using my color roles.
 2. It wrote copy claiming the app could check live kitchen capacity and take instant online deposits. Neither of those features existed yet, which was a real defect in my project.
