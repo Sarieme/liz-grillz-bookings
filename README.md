@@ -53,11 +53,14 @@ Follow these exact commands in sequence to take the project from a fresh clone t
    ```text
    DATABASE_URL="postgresql://<username>:<password>@localhost:5432/<database_name>?schema=public"
    ```
+   *Note: If your database password contains special characters (such as `@`, `:`, or `#`), URL-encode them (e.g. `@` becomes `%40`, `#` becomes `%23`) to avoid URI parsing failures.*
 
 4. **Run database migrations:**
+   Execute the migration command from the repository root (Prisma will automatically prompt to create the database if it does not already exist):
    ```bash
-   npx --prefix task-02-repository-and-scaffold prisma migrate dev
+   npm run prisma:migrate
    ```
+   *(Alternatively, navigate to `cd task-02-repository-and-scaffold` and run `npx prisma migrate dev`.)*
 
 5. **Start the development server:**
    ```bash
@@ -65,12 +68,12 @@ Follow these exact commands in sequence to take the project from a fresh clone t
    ```
 
 6. **View the application:**
-   Open your browser and navigate to `http://localhost:3000`.
+   Open your browser and navigate to `http://localhost:3000` to interact with the booking form.
 
 7. **(Optional) Inspect the database:**
-   In a separate terminal, launch Prisma Studio:
+   In a separate terminal, launch Prisma Studio to view persisted rows:
    ```bash
-   npx --prefix task-02-repository-and-scaffold prisma studio
+   npm run prisma:studio
    ```
    Navigate to `http://localhost:5555`.
 
