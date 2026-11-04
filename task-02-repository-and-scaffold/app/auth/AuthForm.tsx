@@ -237,21 +237,6 @@ export default function AuthForm() {
         </button>
       </div>
 
-      {/* REGRET EXPERIMENT: Deliberate intrusive promotional banner with token violation */}
-      <aside
-        style={{
-          padding: "0.75rem 1rem",
-          marginBottom: "1rem",
-          backgroundColor: "#ffeb3b",
-          color: "#000000",
-          borderRadius: "8px",
-          fontWeight: "bold",
-          textAlign: "center",
-        }}
-      >
-        Special Offer: Use code SUYA20 for 20% off all barbecue packages!
-      </aside>
-
       <h1
         style={{
           fontSize: "var(--font-size-headline-small)",
