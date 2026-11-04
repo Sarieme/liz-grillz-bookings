@@ -7,6 +7,8 @@ export default function AuthForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialMode = searchParams.get("mode") || "signup";
+  const buttonVariant = searchParams.get("button");
+  const inputVariant = searchParams.get("input");
   const [mode, setMode] = useState<"signup" | "login" | "reset">(
     initialMode === "login" || initialMode === "reset" ? initialMode : "signup"
   );
