@@ -20,3 +20,4 @@ NO (Cryptographically distinct outputs confirmed)
 
 ONE-LINE EXPLANATION:
 bcrypt automatically generates a fresh random 128-bit cryptographic salt for every invocation and embeds it directly into the output string, ensuring that identical plaintext passwords produce globally unique hash digests that defeat rainbow tables and precomputed dictionary attacks.
+

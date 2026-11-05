@@ -68,3 +68,4 @@ Because the salt is stored in the modular crypt format string, verification rout
 If salting is omitted (the naive approach often taken with unsalted SHA-256):
 - Every user with the same password has an identical database digest. An attacker instantly identifies shared passwords across corporate accounts.
 - Attackers utilize precalculated rainbow tables containing billions of known hashes, allowing them to reverse hashes in milliseconds through simple constant-time dictionary lookups without performing any live mathematical computation.
+

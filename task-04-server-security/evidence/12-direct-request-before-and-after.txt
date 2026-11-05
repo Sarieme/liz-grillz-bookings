@@ -1,0 +1,92 @@
+================================================================================
+LIZ'S GRILLZ BOOKINGS - STEP 7: DIRECT ENDPOINT BYPASS ATTACK COMPARISON
+Repository: liz-grillz-bookings
+Branch: feature/task-04-server-security
+Date: Thursday, November 5, 2026
+OS: Windows 11 (x64)
+================================================================================
+
+1. THE DIRECT BYPASS ATTACK REQUEST
+--------------------------------------------------------------------------------
+Command:
+curl.exe -i -X POST http://localhost:3000/api/bookings \
+  -H "Content-Type: application/json" \
+  --data-binary "@scratch/attack_payload.json"
+
+Raw JSON Payload:
+{
+  "clientName": "X",
+  "phone": "000",
+  "eventDate": "2020-01-01",
+  "guestCount": -50,
+  "organizationType": "MaliciousBot"
+}
+
+Attacker Intention:
+Bypass browser UI validation completely by issuing a direct HTTP POST request with single-character names, invalid phone numbers, dates four years in the past, and negative guest counts.
+
+--------------------------------------------------------------------------------
+2. TASK THREE RESPONSE (DEFENSELESS SERVER - BEFORE SCHEMA VALIDATION)
+--------------------------------------------------------------------------------
+HTTP/1.1 201 Created
+content-type: application/json
+Date: Tue, 03 Nov 2026 15:46:27 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{
+  "message": "Booking enquiry recorded successfully.",
+  "booking": {
+    "id": "cmw0v0j0t0000gjr80xz8vc41",
+    "clientName": "X",
+    "createdAt": "2026-11-03T15:46:27.485Z"
+  }
+}
+
+Outcome:
+The backend lacked server-side schema gates. It accepted the corrupt payload and wrote directly to PostgreSQL, proving client-side validation is merely convenience rather than security.
+
+--------------------------------------------------------------------------------
+3. TASK FOUR RESPONSE (PROTECTED SERVER - WITH ZOD SCHEMA AT THE BOUNDARY)
+--------------------------------------------------------------------------------
+HTTP/1.1 400 Bad Request
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+content-type: application/json
+Date: Thu, 05 Nov 2026 18:41:00 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{
+  "error": "Payload rejected: Server schema validation failed.",
+  "issues": [
+    {
+      "field": "clientName",
+      "message": "Client name must be at least 5 characters."
+    },
+    {
+      "field": "clientName",
+      "message": "Please provide legal first and last name (at least two words)."
+    },
+    {
+      "field": "phone",
+      "message": "Phone number must be an 11-digit Nigerian format (e.g. 08031234567 or +2348031234567)."
+    },
+    {
+      "field": "eventDate",
+      "message": "Event date must be at least 48 hours in the future to allow kitchen preparation."
+    },
+    {
+      "field": "guestCount",
+      "message": "Minimum catering guest count is 20 guests."
+    },
+    {
+      "field": "organizationType",
+      "message": "Invalid option: expected one of \"Individual\"|\"Corporate\"|\"Wedding\"|\"Religious\"|\"Church\"|\"Corporate Office\""
+    }
+  ]
+}
+
+Outcome:
+The server intercepted the raw payload at the HTTP boundary via Zod schema parsing. Every single invalid property was flagged, and execution halted before any database transaction occurred. Zero garbage data was written to PostgreSQL.

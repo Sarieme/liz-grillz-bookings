@@ -36,3 +36,4 @@ Time required for an attacker to compute 1,000,000,000 (one billion) password gu
 4. CONCLUSION
 --------------------------------------------------------------------------------
 On this machine, bcrypt increases the computational work required to test candidate passwords by a factor of 160,970, rendering offline brute-force cracking completely economically infeasible while adding an imperceptible 490 ms delay to legitimate user logins.
+

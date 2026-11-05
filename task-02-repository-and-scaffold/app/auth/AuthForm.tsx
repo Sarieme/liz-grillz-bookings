@@ -41,6 +41,7 @@ export default function AuthForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Mark field touched on blur
   const handleBlur = (field: string) => {
@@ -125,33 +126,57 @@ export default function AuthForm() {
     return false;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmissionError(null);
     setSuccessMessage(null);
+    setIsSubmitting(true);
 
-    // On login: validate email format on submit rather than real-time
-    if (mode === "login") {
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-        setSubmissionError("Invalid email or password combination.");
-        return;
+    try {
+      if (mode === "signup") {
+        if (!acceptTerms) {
+          setSubmissionError("You must accept the Catering Terms of Service to create an account.");
+          setIsSubmitting(false);
+          return;
+        }
+
+        const res = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fullName,
+            email,
+            phone,
+            password,
+            organizationType: orgType,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setSubmissionError(data.error || "Registration failed.");
+        } else {
+          setSuccessMessage(data.message || `Account created for ${fullName}!`);
+        }
+      } else if (mode === "login") {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setSubmissionError(data.error || "Invalid email or password combination.");
+        } else {
+          setSuccessMessage(`${data.message} Welcome back, ${data.user.fullName}!`);
+        }
+      } else if (mode === "reset") {
+        // Anti-enumeration: neutral response regardless of whether email exists
+        setSuccessMessage("If an account exists for that email, password reset instructions have been sent.");
       }
-      setSuccessMessage("Sign in authenticated. Redirecting to catering portal...");
-      return;
-    }
-
-    if (mode === "signup") {
-      if (!acceptTerms) {
-        setSubmissionError("You must accept the Catering Terms of Service to create an account.");
-        return;
-      }
-      setSuccessMessage(`Account registered for ${fullName}. Welcome to Liz's Grillz!`);
-      return;
-    }
-
-    if (mode === "reset") {
-      // Anti-enumeration: neutral response regardless of whether email exists
-      setSuccessMessage("If an account exists for that email, password reset instructions have been sent.");
+    } catch (err: any) {
+      setSubmissionError("Network error. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -604,12 +629,12 @@ export default function AuthForm() {
         */}
         <button
           type="submit"
-          disabled={!isFormValid()}
+          disabled={!isFormValid() || isSubmitting}
           className="btn-primary"
           style={{
             marginTop: "0.75rem",
-            backgroundColor: isFormValid() ? "var(--color-primary)" : "var(--color-surface-variant)",
-            color: isFormValid() ? "var(--color-on-primary)" : "var(--color-on-surface-variant)",
+            backgroundColor: isFormValid() && !isSubmitting ? "var(--color-primary)" : "var(--color-surface-variant)",
+            color: isFormValid() && !isSubmitting ? "var(--color-on-primary)" : "var(--color-on-surface-variant)",
             fontFamily: "var(--font-family-primary)",
             fontSize: "var(--font-size-label-large)",
             fontWeight: "var(--font-weight-label-large)",
@@ -618,15 +643,19 @@ export default function AuthForm() {
             padding: "0.75rem 1.75rem",
             borderRadius: "8px",
             border: "1px solid transparent",
-            boxShadow: isFormValid() ? "var(--shadow-soft)" : "none",
-            cursor: isFormValid() ? "pointer" : "not-allowed",
-            opacity: isFormValid() ? 1 : 0.65,
+            boxShadow: isFormValid() && !isSubmitting ? "var(--shadow-soft)" : "none",
+            cursor: isFormValid() && !isSubmitting ? "pointer" : "not-allowed",
+            opacity: isFormValid() && !isSubmitting ? 1 : 0.65,
             transition: "all 0.15s ease",
           }}
         >
-          {mode === "signup" && "Create Organizer Account"}
-          {mode === "login" && "Sign In to Account"}
-          {mode === "reset" && "Send Password Recovery Link"}
+          {isSubmitting
+            ? "Processing..."
+            : mode === "signup"
+            ? "Create Organizer Account"
+            : mode === "login"
+            ? "Sign In to Account"
+            : "Send Password Recovery Link"}
         </button>
       </form>
 
