@@ -77,3 +77,4 @@ Running generate... - Prisma Client
 
 CONCLUSION:
 By populating all existing rows before enforcing the NOT NULL constraint, PostgreSQL applied the schema alteration without rejecting existing booking rows, preserving relational integrity with zero downtime.
+

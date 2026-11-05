@@ -62,3 +62,4 @@ During Step 3.4, we triggered an intentional schema drift error (Prisma Error Co
    ```
 
 This proved that type-safety in TypeScript is purely a static contract; without physical database migrations, compile-time validity provides zero runtime persistence guarantees.
+

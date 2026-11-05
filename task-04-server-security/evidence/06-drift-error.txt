@@ -36,3 +36,4 @@ The two things that have gone out of step are the TypeScript application client 
 
 RESOLUTION:
 To resolve the drift, we removed `driftTestField` from `schema.prisma` and re-ran `npx prisma generate`, restoring perfect synchronization between the application client types and the actual database catalog.
+

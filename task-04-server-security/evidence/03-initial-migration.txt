@@ -28,3 +28,4 @@ Your database is now in sync with your schema.
 Running generate... (Use --skip-generate to skip the generators)
 Running generate... - Prisma Client
 ✔ Generated Prisma Client (v6.19.3) to .\node_modules\@prisma\client in 206ms
+

@@ -1,0 +1,38 @@
+================================================================================
+LIZ'S GRILLZ BOOKINGS - STEP 4.2: HARDWARE TIMING BENCHMARK (BCRYPT VS SHA-256)
+Repository: liz-grillz-bookings
+Branch: feature/task-04-server-security
+Date: Thursday, November 5, 2026
+OS: Windows 11 (x64)
+Node Runtime: v24.22.1
+Target Password: LagosGrillz2026!#
+================================================================================
+
+1. SHA-256 BENCHMARK (FAST GENERAL INTEGRITY HASH)
+--------------------------------------------------------------------------------
+Benchmark sample: 100,000 iterations
+Total execution time: 304.85 ms
+Average time per hash: 0.003049 ms (3.05 microseconds)
+Attacker single-core throughput: 328,029 guesses per second
+
+2. BCRYPT BENCHMARK (ADAPTIVE SLOW PASSWORD HASH, COST FACTOR 12)
+--------------------------------------------------------------------------------
+Benchmark sample: 5 sequential runs
+Measured run times: 554.54 ms, 493.02 ms, 470.50 ms, 429.78 ms, 505.77 ms
+Average time per hash: 490.72 ms
+Attacker single-core throughput: 2.04 guesses per second
+
+3. HARDWARE SPEED RATIO AND GUESS ECONOMICS ARITHMETIC
+--------------------------------------------------------------------------------
+Speed comparison ratio:
+  490.72 ms / 0.003049 ms = 160,970.8x
+
+Time required for an attacker to compute 1,000,000,000 (one billion) password guesses:
+- Using SHA-256:
+  1,000,000,000 / 328,029 guesses/sec = 3,048.5 seconds = 50.8 minutes
+- Using bcrypt (work factor 12):
+  1,000,000,000 / 2.04 guesses/sec = 490,196,078 seconds = 136,165.5 hours = 5,673.5 days = 15.54 YEARS
+
+4. CONCLUSION
+--------------------------------------------------------------------------------
+On this machine, bcrypt increases the computational work required to test candidate passwords by a factor of 160,970, rendering offline brute-force cracking completely economically infeasible while adding an imperceptible 490 ms delay to legitimate user logins.

@@ -28,3 +28,4 @@ Then run prisma migrate dev to apply it and verify it works.
 
 TECHNICAL DIAGNOSIS:
 Relational databases enforce NOT NULL constraints across all rows in a table. When a column is added as NOT NULL without a default value, existing rows cannot satisfy the constraint upon insertion into the physical table schema, causing the database engine to abort the DDL transaction to prevent data corruption.
+
