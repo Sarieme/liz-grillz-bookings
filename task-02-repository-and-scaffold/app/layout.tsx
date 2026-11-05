@@ -100,7 +100,7 @@ export default function RootLayout({
             Liz's Grillz
           </Link>
 
-          <nav style={{ display: "flex", gap: "1.25rem" }}>
+          <nav style={{ display: "flex", gap: "1.25rem", alignItems: "center" }}>
             <Link
               href="/"
               style={{
@@ -128,6 +128,21 @@ export default function RootLayout({
               }}
             >
               Catering Rates
+            </Link>
+            <Link
+              href="/auth"
+              style={{
+                textDecoration: "none",
+                color: "var(--color-primary)",
+                fontSize: "var(--font-size-label-large)",
+                fontWeight: "var(--font-weight-label-large)",
+                padding: "0.5rem 0.75rem",
+                borderRadius: "6px",
+                backgroundColor: "var(--color-surface-variant)",
+                transition: "background-color 0.15s ease",
+              }}
+            >
+              Organizer Portal
             </Link>
           </nav>
         </header>

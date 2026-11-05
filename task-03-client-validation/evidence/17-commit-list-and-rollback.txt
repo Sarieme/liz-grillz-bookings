@@ -1,0 +1,51 @@
+================================================================================
+LIZ'S GRILLZ BOOKINGS - STEP 9: DETERMINISTIC ROLLBACK EVIDENCE
+Repository: liz-grillz-bookings
+Branch: feature/task-03-client-validation
+Date: Wednesday, November 4, 2026
+OS: Windows 11
+================================================================================
+
+1. COMMIT LIST PRIOR TO ROLLBACK
+--------------------------------------------------------------------------------
+Command: git log --oneline -n 6
+
+Output:
+78428d3 feat(auth): add promotional discount banner to registration card
+e8fee17 feat(task-03): implement single-page authentication hub, 4-category client validation, accessibility audit, and bypass attack analysis
+60a6e00 Record git log graph evidence and update documentation with merged Pull Request #1 link
+726d61f Merge pull request #1 from Sarieme/feature/information-design
+81a1f9d Implement information design: dynamic head tags, brand favicon, Open Graph, fluid typography clamp, and interview answers
+fab2b13 Add hand-drawn working tree drawing, pipeline documentation, and Aaron Akor usability findings
+
+2. CHOSEN COMMIT ID TO ROLL BACK
+--------------------------------------------------------------------------------
+Commit Hash: 78428d3
+Commit Summary: feat(auth): add promotional discount banner to registration card
+Target File: task-02-repository-and-scaffold/app/auth/AuthForm.tsx
+Reason for Regret: Introduced non-functional promotional marketing banner with hardcoded hex colors into the core authentication card, violating design tokens, visual hierarchy, and information design principles.
+
+3. ROLLBACK COMMAND RUN
+--------------------------------------------------------------------------------
+Command: git revert 78428d3 --no-edit
+
+Execution Output:
+[feature/task-03-client-validation 4145872] Revert "feat(auth): add promotional discount banner to registration card"
+ Date: Wed Nov 4 05:30:51 2026 -0800
+ 1 file changed, 15 deletions(-)
+
+4. COMMIT LIST AFTER ROLLBACK
+--------------------------------------------------------------------------------
+Command: git log --oneline -n 6
+
+Output:
+4145872 Revert "feat(auth): add promotional discount banner to registration card"
+78428d3 feat(auth): add promotional discount banner to registration card
+e8fee17 feat(task-03): implement single-page authentication hub, 4-category client validation, accessibility audit, and bypass attack analysis
+60a6e00 Record git log graph evidence and update documentation with merged Pull Request #1 link
+726d61f Merge pull request #1 from Sarieme/feature/information-design
+81a1f9d Implement information design: dynamic head tags, brand favicon, Open Graph, fluid typography clamp, and interview answers
+
+5. SAFETY ANALYSIS: COMMIT ID VS NATURAL LANGUAGE DESCRIPTIONS
+--------------------------------------------------------------------------------
+Naming an immutable commit hash references the exact cryptographic SHA-1 pointer to a specific tree delta in Git, eliminating ambiguity. In contrast, describing a change with conversational English invites an AI agent or human collaborator to guess, hallucinate lines of code, or introduce partial undo defects across untracked or adjacent files.

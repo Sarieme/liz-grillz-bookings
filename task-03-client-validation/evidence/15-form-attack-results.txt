@@ -1,0 +1,44 @@
+Attacking the Form Through the Browser UI (Form-Level Vulnerability Audit)
+================================================================================
+Timestamp: 11/03/2026 15:46:20 UTC (07:46:20 Local)
+Target Form: http://localhost:3000/auth?mode=signup
+Environment: Chrome 130 / Windows 11
+
+1. Attack Tests Conducted Against Client-Side Validation:
+--------------------------------------------------------------------------------
+
+Test 1: Single-Character / Single-Token Name
+- Input: "a"
+- Result: BLOCKED.
+- UI Feedback: "⚠️ Please enter at least two words (first and last name) of 2+ characters."
+- Button State: Disabled.
+
+Test 2: Password of Pure Spaces
+- Input: "        " (8 space characters)
+- Result: PASSED THROUGH.
+- Vulnerability Discovered: The client-side password length check (`password.length >= 8`)
+  did not invoke `.trim()`. Eight spaces satisfied the length condition without providing
+  real cryptographic entropy, enabling an empty-looking password to be accepted.
+
+Test 3: Email with Valid Syntax but Junk Domain
+- Input: "a@b.c"
+- Result: PASSED THROUGH.
+- Vulnerability Discovered: The client regex checks structural shape (`string@domain.tld`),
+  so syntactically formed garbage domains pass client-side gates completely.
+
+Test 4: Pasted Phone Number with Leading/Trailing Whitespace
+- Input: "  08031234567  "
+- Result: PASSED THROUGH.
+- Behavior: Cleaned via regex replace before submission, allowing the submission to succeed.
+
+Test 5: Emoji / Unicode in Full Name Field
+- Input: "Chief 👑 Adeleke"
+- Result: PASSED THROUGH.
+- Behavior: Recognized as two words separated by a space, successfully passing the client check.
+
+2. Summary of Findings:
+--------------------------------------------------------------------------------
+While client-side validation successfully caught naive empty fields and single-word tokens,
+it permitted an all-whitespace password and syntactically valid nonsense emails to pass.
+Client validation alone cannot guarantee data integrity.
+
