@@ -1,0 +1,79 @@
+================================================================================
+LIZ'S GRILLZ BOOKINGS - STEP 3.3: SAFE ZERO-DOWNTIME THREE-STEP MIGRATION
+Repository: liz-grillz-bookings
+Branch: feature/task-04-server-security
+Date: Thursday, November 5, 2026
+OS: Windows 11
+================================================================================
+
+OVERVIEW:
+When adding a required (NOT NULL) column to a populated table in production, doing so in a single migration causes immediate downtime and database error aborts. We executed the canonical zero-downtime three-step migration pattern across our live PostgreSQL database:
+1. Add column as nullable / optional (cancellationReason String?)
+2. Backfill existing populated rows with a valid business default
+3. Alter column to NOT NULL (cancellationReason String)
+
+--------------------------------------------------------------------------------
+STEP 1: ADD COLUMN AS OPTIONAL
+--------------------------------------------------------------------------------
+Command:
+cd task-02-repository-and-scaffold
+npx prisma migrate dev --name add_cancellation_reason_optional
+
+Execution Output:
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+Datasource "db": PostgreSQL database "lizs_grillz", schema "public" at "localhost:5432"
+
+Applying migration `20261105180402_add_cancellation_reason_optional`
+
+The following migration(s) have been created and applied from new schema changes:
+
+prisma\migrations/
+  └─ 20261105180402_add_cancellation_reason_optional/
+    └─ migration.sql
+
+Your database is now in sync with your schema.
+
+Running generate... (Use --skip-generate to skip the generators)
+Running generate... - Prisma Client
+✔ Generated Prisma Client (v6.19.3) to .\node_modules\@prisma\client in 194ms
+
+--------------------------------------------------------------------------------
+STEP 2: BACKFILL POPULATED ROWS
+--------------------------------------------------------------------------------
+Command:
+node prisma/backfill.js
+
+Execution Output:
+Starting backfill for populated Booking rows...
+Found 5 rows with NULL cancellationReason.
+Successfully backfilled 5 rows.
+Remaining NULL rows: 0
+
+--------------------------------------------------------------------------------
+STEP 3: MAKE COLUMN REQUIRED (NOT NULL)
+--------------------------------------------------------------------------------
+Command:
+npx prisma migrate dev --name make_cancellation_reason_required
+
+Execution Output:
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+Datasource "db": PostgreSQL database "lizs_grillz", schema "public" at "localhost:5432"
+
+Applying migration `20261105180455_make_cancellation_reason_required`
+
+The following migration(s) have been created and applied from new schema changes:
+
+prisma\migrations/
+  └─ 20261105180455_make_cancellation_reason_required/
+    └─ migration.sql
+
+Your database is now in sync with your schema.
+
+Running generate... (Use --skip-generate to skip the generators)
+Running generate... - Prisma Client
+✔ Generated Prisma Client (v6.19.3) to .\node_modules\@prisma\client in 237ms
+
+CONCLUSION:
+By populating all existing rows before enforcing the NOT NULL constraint, PostgreSQL applied the schema alteration without rejecting existing booking rows, preserving relational integrity with zero downtime.
