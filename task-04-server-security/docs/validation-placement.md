@@ -100,3 +100,4 @@ While hand-rolled checks appear simpler initially, they fail in production for f
    - Hand-rolled checks fail on the first error they encounter, forcing users into a frustrating game of whack-a-mole where they fix one error only to discover another upon resubmitting. Schema engines like Zod evaluate the entire payload holistically, returning an aggregated list of all field violations in one pass.
 4. **Static Type Inference**:
    - Zod automatically infers TypeScript types directly from the schema (`z.infer<typeof bookingSchema>`). This guarantees that runtime validation rules and compile-time TypeScript types remain in lockstep, eliminating manual interface duplication and synchronization drift.
+

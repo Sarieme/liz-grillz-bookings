@@ -90,3 +90,4 @@ Transfer-Encoding: chunked
 
 Outcome:
 The server intercepted the raw payload at the HTTP boundary via Zod schema parsing. Every single invalid property was flagged, and execution halted before any database transaction occurred. Zero garbage data was written to PostgreSQL.
+

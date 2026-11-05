@@ -1,9 +1,39 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { checkRateLimit, extractClientIp } from "@/lib/rate-limiter";
 
 export async function POST(request: Request) {
   try {
+    const clientIp = extractClientIp(request);
+
+    // Step 8: Rate Limiting Enforcement (5 registration requests per 15 minutes)
+    const rateCheck = checkRateLimit(`register_${clientIp}`, {
+      windowMs: 15 * 60 * 1000,
+      maxRequests: 5,
+    });
+
+    if (!rateCheck.success) {
+      console.log(
+        `[429 RATE LIMIT EXCEEDED] Registration locked for IP ${clientIp} for ${rateCheck.retryAfterSec}s`
+      );
+      return NextResponse.json(
+        {
+          error:
+            "Too many registration attempts from this IP address. Please wait 15 minutes before trying again.",
+          retryAfterSec: rateCheck.retryAfterSec,
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(rateCheck.retryAfterSec),
+            "X-RateLimit-Limit": String(rateCheck.limit),
+            "X-RateLimit-Remaining": "0",
+          },
+        }
+      );
+    }
+
     const body = await request.json();
     const { fullName, email, phone, password, organizationType } = body;
 
@@ -53,7 +83,9 @@ export async function POST(request: Request) {
       },
     });
 
-    console.log(`[AUTH 201] User registered: ID=${user.id}, NormalizedEmail=${user.email}`);
+    console.log(
+      `[AUTH 201] User registered: ID=${user.id}, NormalizedEmail=${user.email} | IP=${clientIp}`
+    );
 
     return NextResponse.json(
       {
@@ -65,7 +97,13 @@ export async function POST(request: Request) {
           organizationType: user.organizationType,
         },
       },
-      { status: 201 }
+      {
+        status: 201,
+        headers: {
+          "X-RateLimit-Limit": String(rateCheck.limit),
+          "X-RateLimit-Remaining": String(rateCheck.remaining),
+        },
+      }
     );
   } catch (error: any) {
     console.error("[REGISTER ERROR]", error);
@@ -75,4 +113,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

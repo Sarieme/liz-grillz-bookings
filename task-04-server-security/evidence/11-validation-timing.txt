@@ -32,3 +32,4 @@ B. Valid Payload (Accepted, capacity checked & persisted to PostgreSQL):
 In our machine benchmarks, pure schema validation via Zod adds negligible microsecond overhead (~3 microseconds). The 2 to 3 second signup delay observed during class sessions was not caused by schema validation; it was caused by two unoptimized synchronous operations placed inside the request lifecycle:
 1. Adaptive password hashing running with high cost factors (e.g. bcrypt work factor 12 taking ~490 ms per call).
 2. Blocking, synchronous SMTP email delivery. When an application initiates a live TLS socket connection to an external mail server (such as Google or AWS SES) and waits for SMTP handshake and 250 OK acknowledgment before returning an HTTP response, network latency adds 1,500 to 2,500 ms to the request. Moving email generation to asynchronous background workers and separating schema parsing from hashing eliminates this artificial delay.
+
