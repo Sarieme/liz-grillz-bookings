@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { checkRateLimit, extractClientIp } from "@/lib/rate-limiter";
+import { checkPwnedPassword } from "@/lib/pwned-passwords";
 
 export async function POST(request: Request) {
   try {
@@ -66,6 +67,20 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: "An account with this email address already exists." },
         { status: 409 }
+      );
+    }
+
+    // Step 9: Breached Password Check using k-Anonymity (registration only)
+    const pwned = await checkPwnedPassword(trimmedPassword);
+    if (pwned.breached) {
+      console.log(
+        `[BREACH DETECTED] Password rejected: found ${pwned.count.toLocaleString()} times in HIBP database.`
+      );
+      return NextResponse.json(
+        {
+          error: `This password has appeared in ${pwned.count.toLocaleString()} known data breaches and cannot be used. Please choose a more secure password.`,
+        },
+        { status: 400 }
       );
     }
 
