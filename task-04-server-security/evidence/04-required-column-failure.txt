@@ -1,0 +1,31 @@
+================================================================================
+LIZ'S GRILLZ BOOKINGS - STEP 3.2: REQUIRED COLUMN MIGRATION FAILURE
+Repository: liz-grillz-bookings
+Branch: feature/task-04-server-security
+Date: Thursday, November 5, 2026
+OS: Windows 11
+================================================================================
+
+SCENARIO:
+Attempting to add a required (non-nullable) column `cancellationReason String` without a default value to the populated `Booking` table.
+
+COMMAND:
+cd task-02-repository-and-scaffold
+npx prisma migrate dev --name add_required_cancellation_reason
+
+TERMINAL FAILURE OUTPUT:
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+Datasource "db": PostgreSQL database "lizs_grillz", schema "public" at "localhost:5432"
+
+Error: 
+⚠️ We found changes that cannot be executed:
+
+  • Step 0 Added the required column `cancellationReason` to the `Booking` table without a default value. There are 5 rows in this table, it is not possible to execute this step.
+
+You can use prisma migrate dev --create-only to create the migration file, and manually modify it to address the underlying issue(s).
+Then run prisma migrate dev to apply it and verify it works.
+
+TECHNICAL DIAGNOSIS:
+Relational databases enforce NOT NULL constraints across all rows in a table. When a column is added as NOT NULL without a default value, existing rows cannot satisfy the constraint upon insertion into the physical table schema, causing the database engine to abort the DDL transaction to prevent data corruption.
+

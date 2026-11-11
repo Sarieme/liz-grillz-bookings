@@ -1,0 +1,39 @@
+================================================================================
+LIZ'S GRILLZ BOOKINGS - STEP 3.4: INTENTIONAL PRISMA SCHEMA DRIFT ERROR
+Repository: liz-grillz-bookings
+Branch: feature/task-04-server-security
+Date: Thursday, November 5, 2026
+OS: Windows 11
+================================================================================
+
+SCENARIO:
+We modified `schema.prisma` by introducing a new field `driftTestField String @default("unmigrated_value")` into `model Booking`.
+We then ran `npx prisma generate` to rebuild the TypeScript client bindings, deliberately omitting `npx prisma migrate dev`.
+Finally, we executed an application query selecting `driftTestField`.
+
+COMMAND:
+cd task-02-repository-and-scaffold
+node prisma/test-drift.js
+
+TERMINAL ERROR OUTPUT:
+[DRIFT TEST] Querying Booking with newly generated client field 'driftTestField'...
+
+[PRISMA SCHEMA DRIFT ERROR ENCOUNTERED]
+Code: P2022
+Message:
+
+Invalid `prisma.booking.findMany()` invocation in
+C:\Users\HomePC\Desktop\Liz's Grillz Bookings\task-02-repository-and-scaffold\prisma\test-drift.js:6:40
+
+  3 
+  4 async function main() {
+  5   console.log("[DRIFT TEST] Querying Booking with newly generated client field 'driftTestField'...");
+→ 6   const records = await prisma.booking.findMany(
+The column `Booking.driftTestField` does not exist in the current database.
+
+EXPLANATION OF THE TWO THINGS OUT OF STEP:
+The two things that have gone out of step are the TypeScript application client layer (in memory and code) and the physical relational database schema (in PostgreSQL on disk). Running `npx prisma generate` reads `schema.prisma` and updates the compiled JavaScript/TypeScript query builder inside `node_modules/@prisma/client`, convincing the compiler and IDE that `Booking.driftTestField` is valid. However, because no SQL DDL migration was applied to PostgreSQL via `prisma migrate dev`, the physical table in PostgreSQL retains its old structure lacking that column. When the runtime client dispatches `SELECT "Booking"."driftTestField" FROM "Booking"`, PostgreSQL rejects the query with an undefined column error (Prisma error code P2022).
+
+RESOLUTION:
+To resolve the drift, we removed `driftTestField` from `schema.prisma` and re-ran `npx prisma generate`, restoring perfect synchronization between the application client types and the actual database catalog.
+

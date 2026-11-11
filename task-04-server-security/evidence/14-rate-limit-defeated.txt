@@ -1,0 +1,67 @@
+================================================================================
+LIZ'S GRILLZ BOOKINGS - STEP 8: RATE LIMIT ENFORCEMENT AND BYPASS EVIDENCE
+Repository: liz-grillz-bookings
+Branch: feature/task-04-server-security
+Date: Thursday, November 5, 2026
+OS: Windows 11 (x64)
+Endpoint Tested: POST http://localhost:3000/api/auth/login
+Configured Policy: 5 requests per 15-minute sliding window per IP
+================================================================================
+
+1. PHASE 1: DISPATCHING 5 REQUESTS FROM PRIMARY IP (127.0.0.1)
+--------------------------------------------------------------------------------
+[Attempt 1/5] Status: HTTP 401 | Message: Invalid email or password combination.
+[Attempt 2/5] Status: HTTP 401 | Message: Invalid email or password combination.
+[Attempt 3/5] Status: HTTP 401 | Message: Invalid email or password combination.
+[Attempt 4/5] Status: HTTP 401 | Message: Invalid email or password combination.
+[Attempt 5/5] Status: HTTP 401 | Message: Invalid email or password combination.
+
+2. PHASE 2: DISPATCHING 6TH REQUEST (TRIGGERING HTTP 429 LOCKOUT)
+--------------------------------------------------------------------------------
+Command:
+curl.exe -i -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"amaka.okonkwo@enterprise.ng","password":"WrongPassword6"}'
+
+HTTP/1.1 429 Too Many Requests
+retry-after: 898
+x-ratelimit-limit: 5
+x-ratelimit-remaining: 0
+content-type: application/json
+
+{
+  "error": "Too many attempts from this IP address. Account access temporarily locked. Please try again in 15 minutes.",
+  "retryAfterSec": 898
+}
+
+3. PHASE 3: DEFEATING IP-ONLY RATE LIMIT VIA PROXY / IP ROTATION
+--------------------------------------------------------------------------------
+Simulating an adversary rotating their egress IP address to a Lagos MTN mobile cellular gateway (197.210.64.12):
+
+Command:
+curl.exe -i -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -H "X-Forwarded-For: 197.210.64.12" \
+  -d '{"email":"amaka.okonkwo@enterprise.ng","password":"LagosGrillz2026!"}'
+
+Execution Output:
+HTTP/1.1 200 OK
+x-ratelimit-limit: 5
+x-ratelimit-remaining: 4
+content-type: application/json
+
+{
+  "message": "Sign in successful. Welcome back!",
+  "user": {
+    "id": "cmw3vit2h0000gj10294gujzc",
+    "fullName": "Amaka Okonkwo",
+    "email": "amaka.okonkwo@enterprise.ng",
+    "organizationType": "Corporate"
+  }
+}
+
+4. ARCHITECTURAL TAKEAWAY
+--------------------------------------------------------------------------------
+IP-only rate limiting was bypassed instantly by rotating the origin IP address.
+To secure production authentication, rate limiting must be keyed on composite identifiers (such as IP + normalized email) and distributed across Redis counters rather than isolated process memory.
+

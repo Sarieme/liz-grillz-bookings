@@ -1,0 +1,31 @@
+================================================================================
+LIZ'S GRILLZ BOOKINGS - STEP 3.1: INITIAL TASK FOUR SCHEMA MIGRATION
+Repository: liz-grillz-bookings
+Branch: feature/task-04-server-security
+Date: Thursday, November 5, 2026
+OS: Windows 11
+================================================================================
+
+COMMAND:
+cd task-02-repository-and-scaffold
+npx prisma migrate dev --name init_task4_schema
+
+TERMINAL EXECUTION OUTPUT:
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+Datasource "db": PostgreSQL database "lizs_grillz", schema "public" at "localhost:5432"
+
+Applying migration `20261105180110_init_task4_schema`
+
+The following migration(s) have been created and applied from new schema changes:
+
+prisma\migrations/
+  └─ 20261105180110_init_task4_schema/
+    └─ migration.sql
+
+Your database is now in sync with your schema.
+
+Running generate... (Use --skip-generate to skip the generators)
+Running generate... - Prisma Client
+✔ Generated Prisma Client (v6.19.3) to .\node_modules\@prisma\client in 206ms
+

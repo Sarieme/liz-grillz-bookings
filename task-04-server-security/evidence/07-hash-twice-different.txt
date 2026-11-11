@@ -1,0 +1,23 @@
+================================================================================
+LIZ'S GRILLZ BOOKINGS - STEP 4.1: HASHING THE SAME PASSWORD TWICE
+Repository: liz-grillz-bookings
+Branch: feature/task-04-server-security
+Date: Thursday, November 5, 2026
+OS: Windows 11 (x64)
+Node Runtime: v24.22.1
+Algorithm: bcrypt (Work Factor 12)
+Target Input Password: LagosGrillz2026!#
+================================================================================
+
+FIRST HASH OUTPUT:
+$2b$12$0c6KGZQcUW0SSR3EkT0Q1Ov/S2j1MpQcvbz8VypmvW9UO9kODQPSu
+
+SECOND HASH OUTPUT:
+$2b$12$gwF8tmiv8rSGNr03XujUtu/If9MUy7cxgowW76bnw13fT3s0NWjPK
+
+ARE HASHES IDENTICAL:
+NO (Cryptographically distinct outputs confirmed)
+
+ONE-LINE EXPLANATION:
+bcrypt automatically generates a fresh random 128-bit cryptographic salt for every invocation and embeds it directly into the output string, ensuring that identical plaintext passwords produce globally unique hash digests that defeat rainbow tables and precomputed dictionary attacks.
+
