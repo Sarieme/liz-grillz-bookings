@@ -1,0 +1,31 @@
+=== LIZ'S GRILLZ BOOKINGS: SMTP DELIVERY FAILURE TEST ===
+Timestamp: 2026-11-12T09:03:33.497Z
+Host: smtp.gmail.com:587
+User: lizsgrillz.catering@gmail.com
+Security: STARTTLS (Port 587)
+Trigger: Invalid App Password credentials (deliberate failure simulation)
+
+STATUS: REJECTED (Expected Authentication Failure)
+Latency to rejection: 1603.74 ms
+Error Code: EAUTH
+Response Code: 535
+Command: AUTH PLAIN
+Error Message: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4ba08e35e44sm105547075e9.1 - gsmtp
+
+Raw Error Stack:
+Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4ba08e35e44sm105547075e9.1 - gsmtp
+    at SMTPConnection._formatError (C:\Users\HomePC\Desktop\Liz's Grillz Bookings\task-02-repository-and-scaffold\node_modules\nodemailer\dist\cjs\smtp-connection\index.js:964:19)
+    at SMTPConnection._actionAUTHComplete (C:\Users\HomePC\Desktop\Liz's Grillz Bookings\task-02-repository-and-scaffold\node_modules\nodemailer\dist\cjs\smtp-connection\index.js:1805:34)
+    at SMTPConnection.<anonymous> (C:\Users\HomePC\Desktop\Liz's Grillz Bookings\task-02-repository-and-scaffold\node_modules\nodemailer\dist\cjs\smtp-connection\index.js:652:26)
+    at SMTPConnection._processResponse (C:\Users\HomePC\Desktop\Liz's Grillz Bookings\task-02-repository-and-scaffold\node_modules\nodemailer\dist\cjs\smtp-connection\index.js:1192:20)
+    at SMTPConnection._onData (C:\Users\HomePC\Desktop\Liz's Grillz Bookings\task-02-repository-and-scaffold\node_modules\nodemailer\dist\cjs\smtp-connection\index.js:909:14)
+    at SMTPConnection._onSocketData (C:\Users\HomePC\Desktop\Liz's Grillz Bookings\task-02-repository-and-scaffold\node_modules\nodemailer\dist\cjs\smtp-connection\index.js:217:44)
+    at TLSSocket.emit (node:events:514:28)
+    at addChunk (node:internal/streams/readable:569:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:520:3)
+    at Readable.push (node:internal/streams/readable:400:5)
+
+Impact on synchronous HTTP request:
+When executed inside the request/response lifecycle, this failure blocks the registration endpoint for 1603.74 ms before failing and throwing HTTP 500 to the client, despite the user having already been created in PostgreSQL. Asynchronous queuing decouples this network vulnerability entirely.

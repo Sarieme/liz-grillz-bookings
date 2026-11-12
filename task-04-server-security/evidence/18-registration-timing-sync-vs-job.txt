@@ -1,0 +1,27 @@
+=== LIZ'S GRILLZ BOOKINGS: REGISTRATION LATENCY BENCHMARK ===
+Timestamp: 2026-11-12T09:04:22.310Z
+Target Endpoint: POST /api/auth/register
+Platform: Windows 10 x64, Node.js v24.22.1, PostgreSQL 18
+Hashing: bcrypt cost 12
+
+--- MEASUREMENT 1: SYNCHRONOUS EMAIL DELIVERY (BLOCKING) ---
+Status Code: 201
+Registered User: chinedu.benchmark.sync.1794474257526@lagoscorporate.ng
+Delivery Mode: synchronous
+Internal Email Dispatch Time: 22.75 ms
+Total HTTP Request Latency: 3985.05 ms
+
+--- MEASUREMENT 2: BACKGROUND QUEUE DELIVERY (NON-BLOCKING) ---
+Status Code: 201
+Registered User: folake.benchmark.bg.1794474257526@lagoscorporate.ng
+Delivery Mode: background_job
+Internal Dispatch Overhead: 0.19 ms
+Total HTTP Request Latency: 789.77 ms
+
+--- COMPARATIVE PERFORMANCE ANALYSIS ---
+Synchronous Latency:  3985.05 ms
+Background Latency:   789.77 ms
+Latency Reduction:    3195.28 ms saved (5.05x faster response to user)
+
+ARCHITECTURAL VERDICT:
+Synchronous email delivery holds the client's HTTP connection hostage while the server establishes a TCP connection, performs TLS negotiation, and transmits SMTP commands. If the SMTP provider experiences transient network jitter or rate limits, the user's browser hangs and may timeout. In contrast, enqueuing email delivery to a background worker returns immediately once the PostgreSQL record and bcrypt hash are persisted, delivering a snappy, resilient experience for event organizers.

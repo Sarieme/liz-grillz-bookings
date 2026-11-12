@@ -9,19 +9,19 @@ export default function AuthForm() {
   const initialMode = searchParams.get("mode") || "signup";
   const buttonVariant = searchParams.get("button");
   const inputVariant = searchParams.get("input");
-  const [mode, setMode] = useState<"signup" | "login" | "reset">(
-    initialMode === "login" || initialMode === "reset" ? initialMode : "signup"
+  const [mode, setMode] = useState<"signup" | "login" | "reset" | "verify">(
+    initialMode === "login" || initialMode === "reset" || initialMode === "verify" ? initialMode : "signup"
   );
 
   // Sync state if URL query param changes
   useEffect(() => {
     const current = searchParams.get("mode");
-    if (current === "login" || current === "reset" || current === "signup") {
+    if (current === "login" || current === "reset" || current === "signup" || current === "verify") {
       setMode(current);
     }
   }, [searchParams]);
 
-  const switchMode = (newMode: "signup" | "login" | "reset") => {
+  const switchMode = (newMode: "signup" | "login" | "reset" | "verify") => {
     setMode(newMode);
     router.push(`/auth?mode=${newMode}`, { scroll: false });
     setSubmissionError(null);
@@ -34,6 +34,7 @@ export default function AuthForm() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
 
   // Validation Tracking (Touched & Errors)
@@ -123,6 +124,9 @@ export default function AuthForm() {
     if (mode === "reset") {
       return email.trim().length > 0;
     }
+    if (mode === "verify") {
+      return email.trim().length > 0 && verificationCode.trim().length === 6;
+    }
     return false;
   };
 
@@ -168,6 +172,18 @@ export default function AuthForm() {
           setSubmissionError(data.error || "Invalid email or password combination.");
         } else {
           setSuccessMessage(`${data.message} Welcome back, ${data.user.fullName}!`);
+        }
+      } else if (mode === "verify") {
+        const res = await fetch("/api/auth/verify-code", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, code: verificationCode }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setSubmissionError(data.error || "Verification failed.");
+        } else {
+          setSuccessMessage(data.message || "Account verified successfully!");
         }
       } else if (mode === "reset") {
         // Anti-enumeration: neutral response regardless of whether email exists
@@ -245,6 +261,26 @@ export default function AuthForm() {
 
         <button
           type="button"
+          onClick={() => switchMode("verify")}
+          style={{
+            flex: 1,
+            padding: "0.6rem 0.25rem",
+            backgroundColor: "transparent",
+            border: "none",
+            borderBottom: mode === "verify" ? "3px solid var(--color-primary)" : "3px solid transparent",
+            color: mode === "verify" ? "var(--color-primary)" : "var(--color-on-surface-variant)",
+            fontFamily: "var(--font-family-primary)",
+            fontSize: "var(--font-size-label-large)",
+            fontWeight: "var(--font-weight-label-large)",
+            cursor: "pointer",
+            textAlign: "center",
+          }}
+        >
+          Verify Code
+        </button>
+
+        <button
+          type="button"
           onClick={() => switchMode("reset")}
           style={{
             flex: 1,
@@ -274,6 +310,7 @@ export default function AuthForm() {
       >
         {mode === "signup" && "Register Event Organizer Account"}
         {mode === "login" && "Sign In to Your Account"}
+        {mode === "verify" && "Verify Account Code"}
         {mode === "reset" && "Recover Account Access"}
       </h1>
 
@@ -286,6 +323,7 @@ export default function AuthForm() {
       >
         {mode === "signup" && "Create an organizer profile to reserve kitchen capacity and manage invoices."}
         {mode === "login" && "Access your booked catering dates, deposit receipts, and balance invoices."}
+        {mode === "verify" && "Enter your 6-digit verification code received by email to activate your account."}
         {mode === "reset" && "Enter your registered email to receive a password recovery link."}
       </p>
 
@@ -528,7 +566,7 @@ export default function AuthForm() {
         </div>
 
         {/* Password Field (Signup and Login) */}
-        {mode !== "reset" && (
+        {(mode === "signup" || mode === "login") && (
           <div>
             <label
               htmlFor="password"
@@ -589,6 +627,59 @@ export default function AuthForm() {
                 <span aria-hidden="true">⚠️</span> {errors.password}
               </span>
             )}
+          </div>
+        )}
+
+        {/* Verification Code Field (Verify mode only) */}
+        {mode === "verify" && (
+          <div>
+            <label
+              htmlFor="verificationCode"
+              style={{
+                display: "block",
+                fontSize: "var(--font-size-label-large)",
+                fontWeight: "var(--font-weight-label-large)",
+                color: "var(--color-on-surface)",
+                marginBottom: "0.3rem",
+              }}
+            >
+              6-Digit Verification Code <span aria-hidden="true" style={{ color: "var(--color-primary)" }}>*</span>
+            </label>
+            <input
+              id="verificationCode"
+              name="verificationCode"
+              type="text"
+              maxLength={6}
+              required
+              aria-required="true"
+              value={verificationCode}
+              onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ""))}
+              placeholder="e.g. 590766"
+              style={{
+                width: "100%",
+                padding: "0.65rem 0.75rem",
+                borderRadius: "8px",
+                border: "1px solid var(--color-outline)",
+                fontFamily: "monospace",
+                fontSize: "var(--font-size-headline-small)",
+                letterSpacing: "4px",
+                textAlign: "center",
+                backgroundColor: "var(--color-surface)",
+                color: "var(--color-on-surface)",
+                boxSizing: "border-box",
+                outline: "none",
+              }}
+            />
+            <span
+              style={{
+                display: "block",
+                color: "var(--color-on-surface-variant)",
+                fontSize: "var(--font-size-body-small)",
+                marginTop: "0.3rem",
+              }}
+            >
+              Enter the 6-digit numerical code sent to your email.
+            </span>
           </div>
         )}
 
@@ -655,6 +746,8 @@ export default function AuthForm() {
             ? "Create Organizer Account"
             : mode === "login"
             ? "Sign In to Account"
+            : mode === "verify"
+            ? "Verify 6-Digit Code"
             : "Send Password Recovery Link"}
         </button>
       </form>

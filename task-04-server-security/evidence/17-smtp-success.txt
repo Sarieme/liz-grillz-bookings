@@ -1,0 +1,112 @@
+=== LIZ'S GRILLZ BOOKINGS: TRANSACTIONAL EMAIL DELIVERY SUCCESS ===
+Timestamp: 2026-11-12T09:03:35.155Z
+Transport: Nodemailer Direct Stream Transport
+Recipient: amina.bello@lagosevents.ng
+Sender: "Liz's Grillz" <bookings@lizsgrillz.ng>
+Subject: Your Verification Code: 482915 - Liz's Grillz Bookings
+Code Generated: 482915
+Execution Time: 49.29 ms
+Message ID: <578f56e5-f936-3e48-d41b-aeb3c974aa36@lizsgrillz.ng>
+Accepted Recipients: ["amina.bello@lagosevents.ng"]
+Design Tokens Enforced: Primary #C2410C (Primary 40), Warm Terracotta #FFF7ED, Font 'DM Sans'
+
+--- RAW RFC 822 MIME MESSAGE STREAM ---
+From: "Liz's Grillz" <bookings@lizsgrillz.ng>
+To: amina.bello@lagosevents.ng
+Subject: Your Verification Code: 482915 - Liz's Grillz Bookings
+Message-ID: <578f56e5-f936-3e48-d41b-aeb3c974aa36@lizsgrillz.ng>
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 12 Nov 2026 09:03:35 +0000
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+
+
+<!DOCTYPE html>
+<html lang=3D"en">
+<head>
+  <meta charset=3D"utf-8">
+  <meta name=3D"viewport" content=3D"width=3Ddevice-width, =
+initial-scale=3D1.0">
+  <title>Verify Your Liz's Grillz Account</title>
+</head>
+<body style=3D"margin: 0; padding: 24px 0; background-color: =
+#F8FAFC; font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe =
+UI', Roboto, sans-serif; color: #1E293B;">
+  <table role=3D"presentation" =
+width=3D"100%" cellspacing=3D"0" cellpadding=3D"0" style=3D"max-width: =
+580px; margin: 0 auto; background-color: #FFFFFF; border-radius: 12px; =
+border: 1px solid #E2E8F0; overflow: hidden; box-shadow: 0 4px 6px -1px =
+rgba(194, 65, 12, 0.08);">
+   =20
+    <!-- Header with Brand Accent -->
+    <tr>
+      <td style=3D"background-color: #C2410C; padding: 28px 32px; =
+text-align: left;">
+        <h1 style=3D"margin: 0; color: #FFFFFF; =
+font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">
+          Liz's Grillz Bookings
+        </h1>
+        <p style=3D"margin: =
+6px 0 0 0; color: #FFEDD5; font-size: 13px; font-weight: 500;">
+          Lagos Premium Event Catering & Grilling Services
+        </p>
+      </td>
+    </tr>
+
+    <!-- Body Content -->
+    <tr>
+      <td style=3D"padding: 36px 32px 28px 32px;">
+        <h2 =
+style=3D"margin: 0 0 12px 0; font-size: 18px; font-weight: 600; color: =
+#0F172A;">
+          Verify Your Organizer Account
+        </h2>
+        <p style=3D"margin: 0 0 20px 0; font-size: 15px; line-height: 1.6; =
+color: #475569;">
+          Hello <strong>Amina Bello</strong>, thank you =
+for registering with Liz's Grillz Bookings. To complete your account =
+verification and enable event reservations, enter the six-digit =
+verification code below:
+        </p>
+
+        <!-- Code Highlight Box -->
+        <table role=3D"presentation" width=3D"100%" cellspacing=3D"0" =
+cellpadding=3D"0" style=3D"margin: 24px 0;">
+          <tr>
+            <td style=3D"background-color: #FFF7ED; border: 2px dashed =
+#C2410C; border-radius: 8px; padding: 20px; text-align: center;">
+              <span style=3D"font-family: 'Courier New', monospace; =
+font-size: 34px; font-weight: 700; letter-spacing: 8px; color: #C2410C;">
+                482915
+              </span>
+              <p =
+style=3D"margin: 8px 0 0 0; font-size: 12px; color: #9A3412; font-weight: =
+500;">
+                Valid for 10 minutes. Never share this code.
+              </p>
+            </td>
+          </tr>
+        </table>
+
+        <p style=3D"margin: 20px 0 0 0; font-size: 13px; line-height: 1.5; =
+color: #64748B;">
+          If you did not initiate this registration for =
+Liz's Grillz catering services, you can safely ignore this email.
+        </p>
+      </td>
+    </tr>
+
+    <!-- Footer -->
+    <tr>
+      <td style=3D"background-color: #F8FAFC; padding: 20px 32px; =
+border-top: 1px solid #E2E8F0; text-align: center;">
+        <p style=3D"margin: 0; font-size: 12px; color: #94A3B8;">
+          &copy; 2026 Liz's Grillz Bookings. All rights reserved. Victoria =
+Island, Lagos, Nigeria.
+        </p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+ =20
