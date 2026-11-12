@@ -3,6 +3,12 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { checkRateLimit, extractClientIp } from "@/lib/rate-limiter";
 import { checkPwnedPassword } from "@/lib/pwned-passwords";
+import {
+  generateVerificationCode,
+  hashVerificationCode,
+  sendVerificationEmailSync,
+  enqueueVerificationEmail,
+} from "@/lib/email-service";
 
 export async function POST(request: Request) {
   try {
@@ -102,15 +108,55 @@ export async function POST(request: Request) {
       `[AUTH 201] User registered: ID=${user.id}, NormalizedEmail=${user.email} | IP=${clientIp}`
     );
 
+    // Step 10: Generate 6-digit cryptographic code & persist with 10-minute expiry
+    const rawCode = generateVerificationCode();
+    const codeHash = hashVerificationCode(rawCode);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+    await prisma.emailVerification.create({
+      data: {
+        userId: user.id,
+        codeHash,
+        expiresAt,
+        attempts: 0,
+        used: false,
+      },
+    });
+
+    console.log(
+      `[VERIFICATION CODE GENERATED] User=${user.email}, PlainCode=${rawCode}, ExpiresAt=${expiresAt.toISOString()}`
+    );
+
+    // Check delivery mode (sync query param or default background job)
+    const url = new URL(request.url);
+    const isSyncDelivery = url.searchParams.get("sync") === "true";
+
+    const emailStartTime = performance.now();
+    let emailTimingMs = "0.00";
+
+    if (isSyncDelivery) {
+      // Synchronous delivery: blocks inside the HTTP request
+      await sendVerificationEmailSync(user.email, user.fullName, rawCode);
+      emailTimingMs = (performance.now() - emailStartTime).toFixed(2);
+      console.log(`[SYNC EMAIL] Delivered in ${emailTimingMs}ms`);
+    } else {
+      // Asynchronous background job: non-blocking
+      enqueueVerificationEmail(user.email, user.fullName, rawCode);
+      emailTimingMs = (performance.now() - emailStartTime).toFixed(2);
+    }
+
     return NextResponse.json(
       {
-        message: "Registration successful. Welcome to Liz's Grillz Bookings!",
+        message: "Registration successful. Please verify your email with the 6-digit code.",
         user: {
           id: user.id,
           fullName: user.fullName,
           email: user.email,
           organizationType: user.organizationType,
+          verificationCodePreview: rawCode, // Surfaced in development for test flows
         },
+        deliveryMode: isSyncDelivery ? "synchronous" : "background_job",
+        emailDeliveryDurationMs: emailTimingMs,
       },
       {
         status: 201,
