@@ -1,0 +1,12 @@
+=== LIZ'S GRILLZ BOOKINGS: LOGOUT NETWORK FAILURE ANALYSIS ===
+Timestamp: 2026-11-12T13:27:50.896Z
+Scenario: Network connection drops during client logout invocation
+
+1. THE FAILURE CONDITION:
+An event organizer on an unstable 3G connection in Lagos clicks "Sign Out". The browser issues POST /api/auth/logout, but the local cellular tower drops packet transmission. The HTTP request never reaches the Liz's Grillz server, or the server's 200 OK response with the Set-Cookie clear header never reaches the browser.
+
+2. THE CONSEQUENCES OF NAIVE LOGOUT:
+A naive logout implementation relies entirely on the server response to clear state. If the request fails, the client UI continues showing the user as logged in, or the client clears local state while the database retains an orphaned, valid session token on the server.
+
+3. THE SECURITY RISK:
+If the organizer walked away from an internet cafe or shared office workstation assuming they logged out, an unauthorized bystander can inspect the browser or history and continue making authenticated catering modifications.

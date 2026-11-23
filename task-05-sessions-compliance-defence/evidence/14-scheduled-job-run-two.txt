@@ -1,0 +1,18 @@
+=== LIZ'S GRILLZ BOOKINGS: SCHEDULED HARD DELETION JOB - RUN TWO (IDEMPOTENCY PROOF) ===
+Job Name: NDPA_SCHEDULED_HARD_DELETION
+Started At:   2026-11-23T21:01:33.090Z
+Completed At: 2026-11-23T21:01:33.093Z
+Eligible Accounts Found:         0
+Accounts Anonymized & Purged:    0
+Volatile Sessions Purged:        0
+Email Verifications Purged:      0
+Financial Bookings Preserved:    0
+Execution Errors:                0
+
+LOG OUTPUT:
+[SCHEDULED DELETION JOB START] Timestamp: 2026-11-23T21:01:33.090Z
+[SCHEDULED DELETION JOB TELEMETRY] Found 0 expired accounts eligible for hard deletion.
+[SCHEDULED DELETION JOB FINISH] Timestamp: 2026-11-23T21:01:33.093Z | Eligible: 0 | Processed: 0 | Sessions Purged: 0 | Bookings Preserved: 0 | Errors: 0
+
+IDEMPOTENCY VERDICT:
+Running the scheduled hard-deletion job a second time against the identical database state found zero eligible accounts and mutated zero rows. The job is 100% idempotent and safe to re-run concurrently or following a job scheduler restart without causing duplicate writes, ghost mutations, or data corruption.

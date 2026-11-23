@@ -1,0 +1,24 @@
+=== LIZ'S GRILLZ BOOKINGS: SCHEDULED HARD DELETION JOB - RUN ONE ===
+Job Name: NDPA_SCHEDULED_HARD_DELETION
+Started At:   2026-11-23T21:01:33.046Z
+Completed At: 2026-11-23T21:01:33.083Z
+Eligible Accounts Found:         1
+Accounts Anonymized & Purged:    1
+Volatile Sessions Purged:        0
+Email Verifications Purged:      1
+Financial Bookings Preserved:    1
+Execution Errors:                0
+
+LOG OUTPUT:
+[SCHEDULED DELETION JOB START] Timestamp: 2026-11-23T21:01:33.046Z
+[SCHEDULED DELETION JOB TELEMETRY] Found 1 expired accounts eligible for hard deletion.
+[SCHEDULED DELETION JOB PROCESSED] User cmwtr3ozb0000gjqo855f9206 anonymized. Financial bookings preserved: 1
+[SCHEDULED DELETION JOB FINISH] Timestamp: 2026-11-23T21:01:33.083Z | Eligible: 1 | Processed: 1 | Sessions Purged: 0 | Bookings Preserved: 1 | Errors: 0
+
+DATABASE VERIFICATION:
+User Anonymized Name: "Anonymized Customer [NDPA-REQ-5f9206]"
+User Anonymized Email: "anonymized.cmwtr3ozb0000gjqo855f9206@deleted.lizsgrillz.ng"
+User Anonymized Phone: "+2340000000000"
+User Status: "DELETED"
+Financial Booking Intact: BookingID=cmwtr3p730001gj4wqkpqh1tl, TotalAmount=450000, DepositPaid=270000
+Books Balance: CONFIRMED (Financial ledger record preserved for LIRS/FIRS audit).

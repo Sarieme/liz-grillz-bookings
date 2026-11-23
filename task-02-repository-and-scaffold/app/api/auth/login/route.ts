@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { checkRateLimit, extractClientIp } from "@/lib/rate-limiter";
+import { createSession, setSessionCookie } from "@/lib/session";
+import { loginSchema } from "@/lib/validations";
 
 export async function POST(request: Request) {
   try {
@@ -35,34 +37,37 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { email, password } = body;
 
-    // Normalisation and trimming
-    const normalizedEmail = String(email || "").trim().toLowerCase();
-    const trimmedPassword = String(password || "").trim();
-
-    if (!normalizedEmail || !trimmedPassword) {
+    // 1. Schema validation on login payload
+    const validation = loginSchema.safeParse(body);
+    if (!validation.success) {
       return NextResponse.json(
-        { error: "Invalid email or password combination." },
-        { status: 400 }
+        { error: "Incorrect email or password." },
+        { status: 401 }
       );
     }
 
+    // 2. Email normalised, trimmed and lowercased
+    const normalizedEmail = validation.data.email;
+    const trimmedPassword = validation.data.password;
+
+    // 3. Database lookup by the identifying field (email), not by name
     const user = await prisma.user.findUnique({
       where: { email: normalizedEmail },
     });
 
     if (!user) {
-      // Anti-enumeration: Return generic error rather than "User not found"
+      // 6. Generic error message: "Incorrect email or password", never naming which half failed
       console.log(
         `[AUTH 401] Login failed: User not found for email ${normalizedEmail}`
       );
       return NextResponse.json(
-        { error: "Invalid email or password combination." },
+        { error: "Incorrect email or password." },
         { status: 401 }
       );
     }
 
+    // 4. Password verified with the same algorithm that hashed it (bcrypt)
     const passwordMatches = await bcrypt.compare(
       trimmedPassword,
       user.passwordHash
@@ -73,8 +78,30 @@ export async function POST(request: Request) {
         `[AUTH 401] Login failed: Incorrect password for user ${user.id}`
       );
       return NextResponse.json(
-        { error: "Invalid email or password combination." },
+        { error: "Incorrect email or password." },
         { status: 401 }
+      );
+    }
+
+    // Account Lockout Check: NDPA Deletion Grace Period & Lockout
+    if (user.status === "LOCKED_DELETION_PENDING") {
+      console.log(`[AUTH 403] Login rejected: User ${user.id} is locked pending deletion.`);
+      return NextResponse.json(
+        {
+          error:
+            "This account is locked and pending scheduled deletion under the Nigerian Data Protection Act. Active sessions have been revoked.",
+          status: user.status,
+          scheduledHardDeleteAt: user.scheduledHardDeleteAt,
+        },
+        { status: 403 }
+      );
+    }
+
+    if (user.status === "DELETED") {
+      console.log(`[AUTH 403] Login rejected: User ${user.id} has been permanently deleted.`);
+      return NextResponse.json(
+        { error: "This account has been permanently deleted." },
+        { status: 403 }
       );
     }
 
@@ -82,7 +109,13 @@ export async function POST(request: Request) {
       `[AUTH 200] Login successful: User ${user.id} (${user.email}) | IP=${clientIp}`
     );
 
-    return NextResponse.json(
+    // Step 1: Create fresh server-side session and issue hashed token
+    const { session, rawToken } = await createSession(user.id, request);
+    console.log(
+      `[SESSION CREATED] SessionID=${session.id}, RawTokenPreview=${rawToken.substring(0, 10)}..., StoredHash=${session.token.substring(0, 10)}...`
+    );
+
+    const response = NextResponse.json(
       {
         message: "Sign in successful. Welcome back!",
         user: {
@@ -90,6 +123,12 @@ export async function POST(request: Request) {
           fullName: user.fullName,
           email: user.email,
           organizationType: user.organizationType,
+          isVerified: user.isVerified,
+        },
+        session: {
+          id: session.id,
+          expiresAt: session.expiresAt.toISOString(),
+          tokenPreview: rawToken, // Provided for verifiable test scripts and evidence capture
         },
       },
       {
@@ -100,6 +139,11 @@ export async function POST(request: Request) {
         },
       }
     );
+
+    // Set secure cookie on response
+    setSessionCookie(response, rawToken);
+
+    return response;
   } catch (error: any) {
     console.error("[LOGIN ERROR]", error);
     return NextResponse.json(

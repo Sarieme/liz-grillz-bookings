@@ -1,0 +1,27 @@
+=== LIZ'S GRILLZ BOOKINGS: MULTI-SESSION ISOLATION TEST ===
+Timestamp: 2026-11-12T13:27:50.894Z
+User: multisession.1794490063386@lagosparties.ng (ID: cmwdl1vw40000gj74mlpcspno)
+
+--- CONCURRENT SESSIONS ISSUED ---
+Client A (Chrome macOS): SessionID = cmwdl1wf40006gj74v73t2kzo
+Client B (Firefox Win):  SessionID = cmwdl1wua0008gj74pnrqlwmz
+Initial Active Sessions in DB: 3
+
+--- LOGOUT ACTION ON CLIENT A ---
+Client A executed POST /api/auth/logout with Cookie liz_session=11f847eea38a72f8...
+HTTP Status: 200
+Database Action: Atomic DELETE WHERE token = SHA256(tokenA)
+
+--- VERIFICATION OF CONCURRENT SESSION B ---
+Client B authenticated query: GET /api/auth/session
+HTTP Status: 200
+Session B Authenticated: true
+Session B User: multisession.1794490063386@lagosparties.ng
+
+--- VERIFICATION OF REVOKED SESSION A ---
+Client A re-attempt query: GET /api/auth/session
+HTTP Status: 401
+Session A Accepted: false (HTTP 401 Unauthorized)
+
+ARCHITECTURAL VERDICT:
+Sessions are isolated individually by unique cryptographic hashes in PostgreSQL. Logging out from one device revokes solely the active session row tied to that specific device, ensuring that organizers working simultaneously across office desktop and personal mobile devices do not have their active sessions accidentally terminated.
