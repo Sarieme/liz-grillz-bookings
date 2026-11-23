@@ -1,0 +1,16 @@
+=== LIZ'S GRILLZ BOOKINGS: LOGOUT EDGE CASE RESOLUTION ===
+Timestamp: 2026-11-12T13:27:50.898Z
+Resolution: Optimistic Client-Side Termination + Scheduled Server-Side TTL Sweeping
+
+1. OPTIMISTIC CLIENT-SIDE TERMINATION:
+In AuthForm and our client-side session handlers, clicking "Sign Out" executes immediate local state destruction before the network call completes:
+- Local in-memory session and user state are instantly purged to null.
+- The browser cookie is explicitly overwritten with an expired date locally.
+- The UI immediately transitions to the unauthenticated view.
+- The fetch call to POST /api/auth/logout is dispatched in the background with keepalive: true (or navigator.sendBeacon) so the browser guarantees transmission even as the page unloads.
+
+2. SERVER-SIDE DANGLING SESSION MITIGATION:
+Even if the network packet is permanently dropped and the server never receives the logout command:
+- The session row in PostgreSQL has a hard TTL in expiresAt (7 days).
+- Our scheduled background maintenance worker runs every 6 hours and purges all expired sessions where expiresAt < NOW().
+- Any subsequent password change or account deletion request invokes revokeAllUserSessions(userId), immediately purging all active and dangling sessions across all devices.

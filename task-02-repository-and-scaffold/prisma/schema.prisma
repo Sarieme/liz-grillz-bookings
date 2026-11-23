@@ -8,19 +8,23 @@ generator client {
 }
 
 model User {
-  id               String              @id @default(cuid())
-  fullName         String
-  email            String              @unique
-  phone            String
-  passwordHash     String
-  organizationType String              @default("Individual")
-  isVerified       Boolean             @default(false)
-  createdAt        DateTime            @default(now())
-  updatedAt        DateTime            @updatedAt
-  sessions         Session[]
-  bookings         Booking[]
-  paymentAttempts  PaymentAttempt[]
-  verifications    EmailVerification[]
+  id                    String              @id @default(cuid())
+  fullName              String
+  email                 String              @unique
+  phone                 String
+  passwordHash          String
+  role                  String              @default("CLIENT")
+  status                String              @default("ACTIVE")
+  organizationType      String              @default("Individual")
+  isVerified            Boolean             @default(false)
+  deletionRequestedAt   DateTime?
+  scheduledHardDeleteAt DateTime?
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  sessions              Session[]
+  bookings              Booking[]
+  paymentAttempts       PaymentAttempt[]
+  verifications         EmailVerification[]
 }
 
 model Session {

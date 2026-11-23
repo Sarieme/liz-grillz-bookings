@@ -9,6 +9,7 @@ import {
   sendVerificationEmailSync,
   enqueueVerificationEmail,
 } from "@/lib/email-service";
+import { createSession, setSessionCookie } from "@/lib/session";
 
 export async function POST(request: Request) {
   try {
@@ -127,9 +128,10 @@ export async function POST(request: Request) {
       `[VERIFICATION CODE GENERATED] User=${user.email}, PlainCode=${rawCode}, ExpiresAt=${expiresAt.toISOString()}`
     );
 
-    // Check delivery mode (sync query param or default background job)
+    // Check delivery mode and gating policy
     const url = new URL(request.url);
     const isSyncDelivery = url.searchParams.get("sync") === "true";
+    const isHardGating = url.searchParams.get("gating") === "hard";
 
     const emailStartTime = performance.now();
     let emailTimingMs = "0.00";
@@ -145,16 +147,39 @@ export async function POST(request: Request) {
       emailTimingMs = (performance.now() - emailStartTime).toFixed(2);
     }
 
-    return NextResponse.json(
+    // Gating Decision: Soft Gating (Shipped) vs Hard Gating (Alternate)
+    let sessionPayload = null;
+    let rawSessionToken: string | null = null;
+
+    if (!isHardGating) {
+      // Soft Gating: User is logged in immediately with an unverified active session
+      const { session, rawToken } = await createSession(user.id, request);
+      sessionPayload = {
+        id: session.id,
+        expiresAt: session.expiresAt.toISOString(),
+        tokenPreview: rawToken,
+      };
+      rawSessionToken = rawToken;
+      console.log(`[SOFT GATING] Active session ${session.id} issued immediately to unverified user ${user.id}`);
+    } else {
+      console.log(`[HARD GATING] Session creation blocked until user ${user.id} completes email verification.`);
+    }
+
+    const response = NextResponse.json(
       {
-        message: "Registration successful. Please verify your email with the 6-digit code.",
+        message: !isHardGating
+          ? "Account registered successfully! You are logged in. Please verify your email to unlock final invoice confirmation."
+          : "Registration successful. Please verify your email with the 6-digit code before signing in.",
         user: {
           id: user.id,
           fullName: user.fullName,
           email: user.email,
           organizationType: user.organizationType,
+          isVerified: user.isVerified,
           verificationCodePreview: rawCode, // Surfaced in development for test flows
         },
+        gatingMode: isHardGating ? "hard" : "soft",
+        session: sessionPayload,
         deliveryMode: isSyncDelivery ? "synchronous" : "background_job",
         emailDeliveryDurationMs: emailTimingMs,
       },
@@ -166,6 +191,13 @@ export async function POST(request: Request) {
         },
       }
     );
+
+    // If soft gating, attach secure session cookie
+    if (rawSessionToken) {
+      setSessionCookie(response, rawSessionToken);
+    }
+
+    return response;
   } catch (error: any) {
     console.error("[REGISTER ERROR]", error);
     return NextResponse.json(
